@@ -81,7 +81,12 @@ header.hero::before{
   background:var(--creme);border-radius:12px;padding:.65rem .9rem;
   box-shadow:0 4px 14px rgba(0,0,0,.25);
 }
-.hero .wa-logo{width:min(430px,84%);margin:0 auto 1rem;filter:drop-shadow(0 6px 16px rgba(0,0,0,.35))}
+.hero .wa-logo{
+  width:min(560px,96%);margin:0 auto 1rem;padding:1.8rem 2.2rem;box-sizing:border-box;
+  background:radial-gradient(ellipse 60% 56% at 50% 48%,
+    rgba(255,246,214,.32), rgba(255,246,214,.12) 42%, transparent 72%);
+  filter:drop-shadow(0 0 12px rgba(255,238,198,.25)) drop-shadow(0 4px 6px rgba(0,0,0,.35)) drop-shadow(0 14px 16px rgba(0,0,0,.40));
+}
 .hero .edition{
   display:inline-block;font-family:'Fraunces',serif;font-weight:600;
   color:var(--creme);background:rgba(0,0,0,.22);
