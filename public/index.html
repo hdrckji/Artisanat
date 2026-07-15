@@ -357,7 +357,7 @@ footer a:hover{text-decoration:underline}
     <img src="galerie/photo-11.jpg" alt="" loading="eager">
     <img src="galerie/photo-14.jpg" alt="" loading="eager">
     <img src="galerie/photo-16.jpg" alt="" loading="eager">
-    <img src="galerie/photo-18.jpg" alt="" loading="eager">
+    <img src="galerie/photo-10.jpg" alt="" loading="eager">
     <img src="galerie/photo-04.jpg" alt="" loading="eager">
   </div>
   <div class="hero-inner">
@@ -672,7 +672,13 @@ footer a:hover{text-decoration:underline}
 
     <!-- ==================== INFOS PRATIQUES ==================== -->
     <aside class="infos">
-      <h2>Informations pratiques</h2>
+      <div class="info-block">
+        <h3>📸 En images</h3>
+        <p class="muted" style="margin-bottom:.5rem">Retour sur la 1ʳᵉ édition du Week-end Artisanal.</p>
+        <div class="gallery-grid" id="galleryThumbs"></div>
+        <button type="button" class="gallery-more-btn" id="galleryOpen">Voir toute la galerie →</button>
+      </div>
+      <h2 style="margin-top:.4rem">Informations pratiques</h2>
       <div class="info-block">
         <h3>📍 Lieu</h3>
         <p><strong>Famiflora</strong><br>Rue Jules Vantieghem 14<br>7711 Mouscron</p>
@@ -706,12 +712,6 @@ footer a:hover{text-decoration:underline}
             <span class="di" aria-hidden="true">🔒</span> Confidentialité &amp; RGPD
           </a>
         </div>
-      </div>
-      <div class="info-block">
-        <h3>📸 En images</h3>
-        <p class="muted" style="margin-bottom:.5rem">Retour sur la 1ʳᵉ édition du Week-end Artisanal.</p>
-        <div class="gallery-grid" id="galleryThumbs"></div>
-        <button type="button" class="gallery-more-btn" id="galleryOpen">Voir toute la galerie →</button>
       </div>
     </aside>
   </div>
@@ -989,8 +989,8 @@ const galleryPhotos = Array.from({length: GALLERY_COUNT}, (_, i) =>
   const zoomImg    = document.getElementById('lbZoomImg');
   if (!thumbsWrap) return;
 
-  /* aperçu latéral : 5 vignettes + tuile "voir la suite" */
-  const PREVIEW = 5;
+  /* aperçu latéral : 3 vignettes + tuile "+N photos" (4 tuiles au total) */
+  const PREVIEW = 3;
   galleryPhotos.slice(0, PREVIEW).forEach((src, i) => {
     const t = document.createElement('button');
     t.type = 'button'; t.className = 'thumb';
