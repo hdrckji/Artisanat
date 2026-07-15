@@ -178,6 +178,7 @@ textarea{min-height:130px;resize:vertical}
 .check-row{display:flex;gap:.65rem;align-items:flex-start;padding:.45rem 0}
 .check-row input{width:20px;height:20px;margin-top:.15rem;accent-color:var(--vert);flex-shrink:0}
 .check-row label{font-weight:500}
+.autre-txt{width:100%;min-height:64px;margin-top:.35rem}
 .inline-opts{display:flex;flex-wrap:wrap;gap:1.4rem;padding:.3rem 0}
 .inline-opts label{display:flex;align-items:center;gap:.45rem;font-weight:600;cursor:pointer}
 .inline-opts input{width:19px;height:19px;accent-color:var(--vert)}
@@ -486,8 +487,8 @@ footer a:hover{text-decoration:underline}
         <div class="check-row" style="align-items:center">
           <input type="checkbox" id="mobAutre" name="mobilier" value="Autre">
           <label for="mobAutre">Autre :</label>
-          <input type="text" id="mobAutreTxt" name="mobilier_autre" style="max-width:280px" placeholder="Précisez…">
         </div>
+        <textarea id="mobAutreTxt" name="mobilier_autre" class="autre-txt" placeholder="Précisez le mobilier que vous apportez…"></textarea>
       </fieldset>
 
       <!-- 4. Électricité -->
@@ -523,8 +524,8 @@ footer a:hover{text-decoration:underline}
         <div class="check-row" style="align-items:center">
           <input type="checkbox" name="produits" value="Autre" id="pAutre">
           <label for="pAutre">Autre :</label>
-          <input type="text" id="pAutreTxt" name="produits_autre" style="max-width:280px" placeholder="Précisez…">
         </div>
+        <textarea id="pAutreTxt" name="produits_autre" class="autre-txt" placeholder="Précisez les produits que vous exposez…"></textarea>
         <p class="err-msg" data-for="produits">Veuillez cocher au moins une catégorie.</p>
       </fieldset>
 

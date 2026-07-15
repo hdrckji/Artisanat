@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Administration — Week-end Artisanal Famiflora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brun:#5f4630;--brun-fonce:#46331f;--beige:#ead9c0;--beige-clair:#f3e8d6;
+  --creme:#faf4e8;--vert:#76b82a;--vert-fonce:#5e9420;--terre:#b9713f;
+  --blanc:#fff;--encre:#3a2d1e;--gris-doux:#8a7a66;--erreur:#c0392b;
+  --radius:14px;--ombre:0 6px 24px rgba(70,51,31,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Karla',sans-serif;color:var(--encre);background:var(--creme);line-height:1.5}
+h1,h2,h3{font-family:'Fraunces',serif;color:var(--brun-fonce)}
+a{color:var(--vert-fonce)}
+button{font-family:'Karla',sans-serif;cursor:pointer}
+.btn{border:none;background:var(--vert);color:#fff;border-radius:999px;font-weight:700;
+  padding:.6rem 1.3rem;font-size:.95rem;box-shadow:0 3px 0 var(--vert-fonce);transition:transform .12s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none}
+.btn-danger{background:var(--erreur);box-shadow:0 3px 0 #93261a}
+.btn-ghost{background:var(--blanc);color:var(--brun);border:2px solid var(--beige);box-shadow:none;font-weight:700;border-radius:999px;padding:.55rem 1.1rem}
+.btn-ghost:hover{background:var(--beige-clair)}
+.btn-sm{padding:.4rem .9rem;font-size:.85rem}
+
+/* ---------- Connexion ---------- */
+#login{min-height:100vh;display:grid;place-items:center;padding:1.5rem}
+.login-card{background:var(--blanc);border-radius:var(--radius);box-shadow:var(--ombre);
+  padding:2.4rem;width:100%;max-width:400px;border-top:6px solid var(--vert);text-align:center}
+.login-card h1{font-size:1.5rem;margin-bottom:.3rem}
+.login-card p{color:var(--gris-doux);margin-bottom:1.6rem;font-size:.9rem}
+.login-card label{display:block;text-align:left;font-weight:700;font-size:.85rem;margin:.9rem 0 .3rem}
+.login-card input{width:100%;font-size:1rem;background:var(--creme);border:2px solid var(--beige);
+  border-radius:10px;padding:.7rem .85rem}
+.login-card input:focus{outline:none;border-color:var(--vert)}
+.login-card .btn{width:100%;margin-top:1.6rem;padding:.85rem}
+.login-err{color:var(--erreur);font-weight:700;font-size:.9rem;margin-top:1rem;min-height:1.1rem}
+
+/* ---------- Application ---------- */
+#app{display:none}
+header.top{background:linear-gradient(180deg,#7a5a3a,#5f4630);border-bottom:5px solid var(--vert);
+  color:var(--creme);padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+header.top h1{color:var(--creme);font-size:1.25rem}
+.smtp-warn{background:#fdf3f1;color:#93261a;border:1px solid #e6b0aa;border-radius:10px;
+  padding:.6rem 1rem;margin:1rem auto 0;max-width:1100px;font-size:.9rem;font-weight:600}
+.wrap{max-width:1100px;margin:0 auto;padding:1.4rem}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.tab{background:var(--blanc);border:2px solid var(--beige);border-radius:999px;padding:.5rem 1.2rem;
+  font-weight:700;color:var(--brun);display:flex;align-items:center;gap:.5rem}
+.tab.active{background:var(--brun);color:var(--creme);border-color:var(--brun)}
+.tab .count{background:var(--vert);color:#fff;border-radius:999px;font-size:.75rem;padding:.05rem .5rem;min-width:22px;text-align:center}
+.toolbar{display:flex;justify-content:flex-end;margin-bottom:1rem}
+
+.card{background:var(--blanc);border-radius:12px;box-shadow:var(--ombre);padding:1rem 1.2rem;margin-bottom:.8rem;
+  display:flex;align-items:center;gap:1rem;cursor:pointer;border-left:5px solid var(--beige);transition:transform .1s}
+.card:hover{transform:translateX(3px)}
+.card.valide{border-left-color:var(--vert)}
+.card.refuse{border-left-color:var(--erreur)}
+.card.pending{border-left-color:var(--terre)}
+.card .main{flex:1;min-width:0}
+.card .main strong{display:block;font-size:1.05rem;color:var(--brun-fonce)}
+.card .main .sub{color:var(--gris-doux);font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .meta{text-align:right;font-size:.8rem;color:var(--gris-doux);flex-shrink:0}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:.15rem .6rem;margin-left:.3rem}
+.badge.ok{background:#eaf6d9;color:var(--vert-fonce)}
+.badge.wait{background:#fdeee2;color:var(--terre)}
+.badge.paid{background:#e7f0fb;color:#2b6cb0}
+.section-sep{font-family:'Fraunces',serif;font-weight:700;color:var(--brun);margin:1.2rem 0 .6rem;font-size:1.05rem;
+  display:flex;align-items:center;gap:.5rem}
+.empty{color:var(--gris-doux);text-align:center;padding:2.5rem;background:var(--blanc);border-radius:12px}
+
+/* ---------- Modale détail ---------- */
+.overlay{position:fixed;inset:0;background:rgba(30,20,10,.6);display:none;z-index:50;
+  align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--creme);border-radius:var(--radius);max-width:760px;width:100%;box-shadow:var(--ombre);
+  border-top:6px solid var(--vert);margin:auto}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.2rem 1.4rem;
+  border-bottom:1px solid var(--beige);position:sticky;top:0;background:var(--creme);border-radius:var(--radius) var(--radius) 0 0;z-index:1}
+.modal-head h2{font-size:1.3rem}
+.modal-close{background:var(--beige);border:none;border-radius:50%;width:38px;height:38px;font-size:1.1rem}
+.modal-body{padding:1.4rem}
+dl.recap{display:grid;grid-template-columns:210px 1fr;gap:.3rem .9rem;font-size:.92rem;margin-bottom:1.2rem}
+dl.recap dt{font-weight:700;color:var(--brun)}
+dl.recap dd{word-break:break-word}
+@media(max-width:560px){dl.recap{grid-template-columns:1fr}dl.recap dt{margin-top:.5rem}}
+.photos{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.photos a{display:block;width:110px;height:110px;border-radius:10px;overflow:hidden;border:2px solid var(--beige)}
+.photos img{width:100%;height:100%;object-fit:cover}
+.action-box{background:var(--blanc);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:1rem;box-shadow:var(--ombre)}
+.action-box h3{font-size:1.05rem;margin-bottom:.7rem}
+.action-row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
+.status-line{font-weight:700;margin-bottom:.7rem}
+.status-line.valide{color:var(--vert-fonce)}
+.status-line.refuse{color:var(--erreur)}
+.status-line.pending{color:var(--terre)}
+.file-input{font-size:.9rem}
+.check-inline{display:flex;align-items:center;gap:.5rem;font-weight:600;margin-top:.3rem}
+.check-inline input{width:20px;height:20px;accent-color:var(--vert)}
+.msg{font-size:.88rem;margin-top:.6rem;font-weight:600}
+.msg.ok{color:var(--vert-fonce)}
+.msg.err{color:var(--erreur)}
+
+/* ---------- Modale export ---------- */
+.export-cols{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .9rem;margin:1rem 0}
+@media(max-width:560px){.export-cols{grid-template-columns:1fr}}
+.export-cols label{display:flex;align-items:center;gap:.5rem;font-size:.9rem}
+.export-cols input{width:18px;height:18px;accent-color:var(--vert)}
+.spin{opacity:.6;pointer-events:none}
+</style>
+</head>
+<body>
+
+<!-- ==================== CONNEXION ==================== -->
+<div id="login">
+  <form class="login-card" id="loginForm">
+    <h1>🔐 Espace administrateur</h1>
+    <p>Week-end Artisanal — Famiflora</p>
+    <label for="user">Identifiant</label>
+    <input type="text" id="user" autocomplete="username" required>
+    <label for="pass">Mot de passe</label>
+    <input type="password" id="pass" autocomplete="current-password" required>
+    <button type="submit" class="btn">Se connecter</button>
+    <div class="login-err" id="loginErr"></div>
+  </form>
+</div>
+
+<!-- ==================== APPLICATION ==================== -->
+<div id="app">
+  <header class="top">
+    <h1>🌿 Pré-inscriptions — Week-end Artisanal</h1>
+    <button class="btn-ghost btn-sm" id="logoutBtn">Se déconnecter</button>
+  </header>
+  <div id="smtpWarn" class="smtp-warn" style="display:none">
+    ⚠️ Le service e-mail (SMTP) n'est pas configuré : les décisions sont enregistrées mais aucun e-mail ne sera envoyé aux candidats.
+  </div>
+
+  <div class="wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-status="pending">📋 Pré-inscriptions <span class="count" id="c-pending">0</span></button>
+      <button class="tab" data-status="valide">✅ Validées <span class="count" id="c-valide">0</span></button>
+      <button class="tab" data-status="refuse">❌ Non validées <span class="count" id="c-refuse">0</span></button>
+    </div>
+
+    <div class="toolbar" id="toolbar" style="display:none">
+      <button class="btn btn-sm" id="exportBtn">⬇️ Exporter en Excel</button>
+    </div>
+
+    <div id="list"></div>
+  </div>
+</div>
+
+<!-- ==================== MODALE DÉTAIL ==================== -->
+<div class="overlay" id="detailOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="detailTitle">Détail</h2>
+      <button class="modal-close" data-close-detail>✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- ==================== MODALE EXPORT ==================== -->
+<div class="overlay" id="exportOverlay">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head">
+      <h2>⬇️ Exporter en Excel</h2>
+      <button class="modal-close" data-close-export>✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:.4rem">Cochez les informations à inclure (1 ligne = 1 artisan) :</p>
+      <div class="export-cols" id="exportCols"></div>
+      <div class="action-row" style="justify-content:flex-end">
+        <button class="btn-ghost btn-sm" data-close-export>Annuler</button>
+        <button class="btn btn-sm" id="exportGo">Télécharger le fichier</button>
+      </div>
+      <div class="msg" id="exportMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Champs affichés dans le détail (ordre + libellés) ---------- */
+const FIELD_LABELS = [
+  ['nom','Nom & prénom'],['entreprise','Entreprise'],['telephone','Téléphone'],['email','E-mail'],
+  ['instagram','Instagram'],['facebook','Facebook'],['adresse','Adresse'],['tva','N° TVA'],
+  ['autorisation_reseaux','Autorisation réseaux sociaux'],['nb_personnes','Personnes présentes'],
+  ['heure_arrivee','Arrivée samedi'],['longueur','Longueur stand (m)'],['largeur','Largeur stand (m)'],
+  ['mobilier','Mobilier apporté'],['mobilier_autre','Mobilier — autre'],['electricite','Électricité'],
+  ['type_appareils',"Type d'appareils"],['puissance_watts','Puissance (W)'],['produits','Produits exposés'],
+  ['produits_autre','Produits — autre'],['formule','Formule choisie'],['besoins','Besoins particuliers'],
+  ['date','Date'],['signature','Signature'],
+];
+const STATUS_LABEL = { pending:'En attente', valide:'Validée', refuse:'Non validée' };
+const DEFAULT_EXPORT = ['contact','entreprise','stand','heure_arrivee','formule','facture_envoyee','facture_payee'];
+
+let SUBS = [];
+let CURRENT_TAB = 'pending';
+let COLUMNS = null;
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtDate(iso){ try{ return new Date(iso).toLocaleString('fr-BE',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return iso||''; } }
+
+async function api(path, opts={}){
+  const res = await fetch(path, { credentials:'same-origin', ...opts });
+  if (res.status === 401){ showLogin(); throw new Error('unauthorized'); }
+  return res;
+}
+
+/* ---------- Connexion ---------- */
+function showLogin(){ $('#login').style.display='grid'; $('#app').style.display='none'; }
+function showApp(){ $('#login').style.display='none'; $('#app').style.display='block'; }
+
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('#loginErr').textContent = '';
+  const user = $('#user').value, pass = $('#pass').value;
+  const res = await fetch('/api/admin/login', {
+    method:'POST', credentials:'same-origin',
+    headers:{'Content-Type':'application/json'}, body:JSON.stringify({user,pass})
+  });
+  if (res.ok){ $('#pass').value=''; await start(); }
+  else { $('#loginErr').textContent = 'Identifiant ou mot de passe incorrect.'; }
+});
+
+$('#logoutBtn').addEventListener('click', async () => {
+  await fetch('/api/admin/logout', {method:'POST', credentials:'same-origin'});
+  showLogin();
+});
+
+/* ---------- Chargement ---------- */
+async function start(){
+  const me = await (await fetch('/api/admin/me', {credentials:'same-origin'})).json();
+  if (!me.authenticated){ showLogin(); return; }
+  showApp();
+  $('#smtpWarn').style.display = me.smtp ? 'none' : 'block';
+  await loadSubs();
+}
+
+async function loadSubs(){
+  const data = await (await api('/api/admin/submissions')).json();
+  SUBS = data.submissions || [];
+  renderCounts();
+  renderTab();
+}
+
+function renderCounts(){
+  const by = s => SUBS.filter(r=>r.status===s).length;
+  $('#c-pending').textContent = by('pending');
+  $('#c-valide').textContent = by('valide');
+  $('#c-refuse').textContent = by('refuse');
+}
+
+/* ---------- Onglets ---------- */
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  CURRENT_TAB = t.dataset.status;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x===t));
+  renderTab();
+}));
+
+function cardHtml(r){
+  const f = r.fields || {};
+  const factureBadge = r.status==='valide'
+    ? (r.facture && r.facture.envoyeeAt ? '<span class="badge ok">Facture envoyée</span>' : '<span class="badge wait">Facture à envoyer</span>')
+    : '';
+  const paidBadge = (r.status==='valide' && r.facturePayee) ? '<span class="badge paid">Payée</span>' : '';
+  return `<div class="card ${r.status}" data-id="${r.id}">
+    <div class="main">
+      <strong>${esc(f.entreprise || f.nom || 'Sans nom')}</strong>
+      <span class="sub">${esc(f.nom||'')} · ${esc(f.email||'')} · ${esc(f.telephone||'')}${factureBadge}${paidBadge}</span>
+    </div>
+    <div class="meta">${esc(f.formule||'')}<br>${fmtDate(r.createdAt)}</div>
+  </div>`;
+}
+
+function renderTab(){
+  const list = $('#list');
+  const rows = SUBS.filter(r => r.status === CURRENT_TAB);
+  $('#toolbar').style.display = (CURRENT_TAB==='valide') ? 'flex' : 'none';
+
+  if (!rows.length){ list.innerHTML = `<div class="empty">Aucune inscription dans cet onglet.</div>`; bindCards(); return; }
+
+  if (CURRENT_TAB === 'valide'){
+    const sans = rows.filter(r => !(r.facture && r.facture.envoyeeAt));
+    const avec = rows.filter(r => r.facture && r.facture.envoyeeAt);
+    let html = '';
+    if (sans.length) html += `<div class="section-sep">🧾 Facture à envoyer (${sans.length})</div>` + sans.map(cardHtml).join('');
+    if (avec.length) html += `<div class="section-sep">✅ Facture envoyée (${avec.length})</div>` + avec.map(cardHtml).join('');
+    list.innerHTML = html;
+  } else {
+    list.innerHTML = rows.map(cardHtml).join('');
+  }
+  bindCards();
+}
+
+function bindCards(){
+  document.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
+}
+
+/* ---------- Détail ---------- */
+function openDetail(id){
+  const r = SUBS.find(x=>x.id===id);
+  if (!r) return;
+  const f = r.fields || {};
+  $('#detailTitle').textContent = f.entreprise || f.nom || 'Détail';
+
+  let recap = '<dl class="recap">';
+  FIELD_LABELS.forEach(([k,lab])=>{ if (f[k]!=null && String(f[k]).trim()!=='') recap += `<dt>${lab}</dt><dd>${esc(f[k])}</dd>`; });
+  recap += `<dt>Reçue le</dt><dd>${fmtDate(r.createdAt)}</dd></dl>`;
+
+  const photos = (r.photos||[]).map(n =>
+    `<a href="/api/admin/submissions/${r.id}/photo/${encodeURIComponent(n)}" target="_blank">
+       <img src="/api/admin/submissions/${r.id}/photo/${encodeURIComponent(n)}" alt="photo"></a>`).join('');
+
+  const factureLine = (r.facture && r.facture.envoyeeAt)
+    ? `<p class="msg ok">Facture envoyée le ${fmtDate(r.facture.envoyeeAt)} · <a href="/api/admin/submissions/${r.id}/facture" target="_blank">télécharger</a></p>`
+    : (r.facture ? `<p class="msg">Facture déposée mais non encore envoyée.</p>` : '');
+
+  const decision = r.status==='pending' ? `
+    <div class="action-row">
+      <button class="btn" data-act="validate" data-id="${r.id}">✅ Valider la candidature</button>
+      <button class="btn btn-danger" data-act="reject" data-id="${r.id}">❌ Ne pas valider</button>
+    </div>` : `
+    <div class="action-row">
+      ${r.status==='valide' ? '<button class="btn btn-danger btn-sm" data-act="reject" data-id="'+r.id+'">Basculer en non validée</button>' : '<button class="btn btn-sm" data-act="validate" data-id="'+r.id+'">Basculer en validée</button>'}
+    </div>`;
+
+  $('#detailBody').innerHTML = `
+    <p class="status-line ${r.status}">Statut : ${STATUS_LABEL[r.status]}</p>
+    ${photos ? `<div class="photos">${photos}</div>` : ''}
+    ${recap}
+    <div class="action-box">
+      <h3>Décision</h3>
+      ${decision}
+    </div>
+    <div class="action-box">
+      <h3>🧾 Facture</h3>
+      ${factureLine}
+      <div class="action-row">
+        <input type="file" class="file-input" id="factureFile" accept="application/pdf,image/*">
+        <button class="btn btn-sm" data-act="facture" data-id="${r.id}">Envoyer la facture par e-mail</button>
+      </div>
+      <label class="check-inline"><input type="checkbox" id="paidChk" ${r.facturePayee?'checked':''} data-id="${r.id}"> Facture payée</label>
+      <div class="msg" id="detailMsg"></div>
+    </div>`;
+
+  bindDetailActions();
+  $('#detailOverlay').classList.add('open');
+}
+
+function bindDetailActions(){
+  document.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => doAction(b)));
+  const chk = $('#paidChk');
+  if (chk) chk.addEventListener('change', async () => {
+    await api(`/api/admin/submissions/${chk.dataset.id}/facture-payee`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({value:chk.checked})
+    });
+    await loadSubs();
+  });
+}
+
+async function doAction(btn){
+  const id = btn.dataset.id, act = btn.dataset.act;
+  const msg = $('#detailMsg');
+  btn.classList.add('spin');
+  try{
+    if (act==='validate' || act==='reject'){
+      const res = await api(`/api/admin/submissions/${id}/${act}`, {method:'POST'});
+      const j = await res.json();
+      if (msg) msg.className='msg ok', msg.textContent = j.mailed ? 'Décision enregistrée et e-mail envoyé.' : 'Décision enregistrée (e-mail non envoyé : SMTP non configuré).';
+      await loadSubs();
+      $('#detailOverlay').classList.remove('open');
+    } else if (act==='facture'){
+      const file = $('#factureFile').files[0];
+      if (!file){ msg.className='msg err'; msg.textContent='Veuillez choisir un fichier de facture.'; btn.classList.remove('spin'); return; }
+      const fd = new FormData(); fd.append('facture', file, file.name);
+      const res = await api(`/api/admin/submissions/${id}/facture`, {method:'POST', body:fd});
+      const j = await res.json();
+      if (!res.ok){ msg.className='msg err'; msg.textContent="L'envoi de la facture a échoué."; }
+      else { msg.className='msg ok'; msg.textContent = j.mailed ? 'Facture envoyée par e-mail au candidat.' : 'Facture enregistrée (e-mail non envoyé : SMTP non configuré).'; }
+      await loadSubs();
+      openDetail(id);
+    }
+  }catch(e){ if (msg){ msg.className='msg err'; msg.textContent='Erreur : '+e.message; } }
+  btn.classList.remove('spin');
+}
+
+document.querySelectorAll('[data-close-detail]').forEach(b=>b.addEventListener('click',()=>$('#detailOverlay').classList.remove('open')));
+$('#detailOverlay').addEventListener('click', e=>{ if(e.target===$('#detailOverlay')) $('#detailOverlay').classList.remove('open'); });
+
+/* ---------- Export ---------- */
+$('#exportBtn').addEventListener('click', openExport);
+async function openExport(){
+  if (!COLUMNS){
+    const j = await (await api('/api/admin/columns')).json();
+    COLUMNS = j.columns || [];
+  }
+  $('#exportCols').innerHTML = COLUMNS.map(c =>
+    `<label><input type="checkbox" value="${c.key}" ${DEFAULT_EXPORT.includes(c.key)?'checked':''}> ${esc(c.label)}</label>`).join('');
+  $('#exportMsg').textContent='';
+  $('#exportOverlay').classList.add('open');
+}
+document.querySelectorAll('[data-close-export]').forEach(b=>b.addEventListener('click',()=>$('#exportOverlay').classList.remove('open')));
+
+$('#exportGo').addEventListener('click', async () => {
+  const cols = [...document.querySelectorAll('#exportCols input:checked')].map(i=>i.value);
+  if (!cols.length){ $('#exportMsg').className='msg err'; $('#exportMsg').textContent='Sélectionnez au moins une colonne.'; return; }
+  $('#exportMsg').className='msg'; $('#exportMsg').textContent='Génération du fichier…';
+  const res = await api('/api/admin/export', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({columns:cols, status:'valide'})
+  });
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'inscriptions-weekend-artisanal.xlsx';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  $('#exportMsg').className='msg ok'; $('#exportMsg').textContent='Fichier téléchargé.';
+});
+
+/* ---------- Démarrage ---------- */
+start();
+</script>
+</body>
+</html>

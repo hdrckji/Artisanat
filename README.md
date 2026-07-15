@@ -8,8 +8,11 @@ Page web de pré-inscription des artisans au Week-end Artisanal organisé par Fa
 - `public/confidentialite.html` — page d'information RGPD / protection des données.
 - `public/reglement-week-end.pdf` — le règlement du week-end (téléchargeable depuis la page).
 - `public/galerie/` — les photos de la galerie (`photo-01.jpg` … `photo-19.jpg`).
-- `server.js` — serveur Express : sert la page **et** reçoit les pré-inscriptions (`/api/preinscription`).
-- `mailer.js` — envoi des e-mails (accusé de réception au candidat + notification à l'organisateur).
+- `public/admin.html` — espace administrateur (connexion, consultation, validation, factures, export Excel).
+- `server.js` — serveur Express : sert le site, reçoit **et stocke** les pré-inscriptions, expose l'API admin.
+- `store.js` — stockage des pré-inscriptions (JSON + fichiers) dans `DATA_DIR`.
+- `auth.js` — authentification de l'espace admin (cookie de session signé).
+- `mailer.js` — e-mails : accusé candidat, notification organisateur, validation, refus, facture.
 - `.env.example` — modèle de configuration SMTP.
 - `package.json` — configuration Node détectée automatiquement par Railway.
 
@@ -56,6 +59,39 @@ npm install
 npm start          # http://localhost:3000
 ```
 
+## 🔐 Espace administrateur
+
+Accessible sur **`/admin`** (ex. `https://votre-domaine/admin`).
+
+- **Identifiant** : `Famiartisanal` — **Mot de passe** : `Fami+2026*`
+  (modifiables via les variables `ADMIN_USER` / `ADMIN_PASS`).
+- L'organisateur y retrouve **toutes les pré-inscriptions**, réparties en 3 onglets :
+  - **Pré-inscriptions** (en attente) : consulter le détail (infos + 3 photos) et **valider** ou **refuser** (un e-mail poli et professionnel est envoyé au candidat dans les deux cas) ;
+  - **Validées** : les candidatures acceptées, séparées entre « facture à envoyer » et « facture envoyée ». Pour chaque inscrit, une zone d'**upload de facture** : à l'envoi, la facture part par e-mail au candidat et la colonne « facture envoyée » passe au vert. Une case **« facture payée »** se coche manuellement ;
+  - **Non validées** : les candidatures refusées.
+- **Export Excel** (onglet Validées) : cochez les informations à inclure (1 ligne = 1 artisan), avec des colonnes composites possibles (*Contact* = nom + tél + e-mail dans une cellule, *Taille du stand* = longueur × largeur) et les colonnes **Facture envoyée** / **Facture payée**.
+
+## 💾 Persistance des données (IMPORTANT sur Railway)
+
+Les pré-inscriptions et les fichiers (photos, factures) sont stockés sur disque dans le dossier
+`DATA_DIR` (par défaut `./data`).
+
+> ⚠️ Le système de fichiers de Railway est **éphémère** : sans volume, les données seraient perdues à
+> chaque redéploiement. **Ajoutez un volume** :
+> 1. Railway → votre service → **Variables** → `DATA_DIR=/data`
+> 2. Railway → **Volumes** → *New Volume*, point de montage **`/data`**.
+>
+> (En local, aucune action : les données vont dans `./data`, ignoré par git.)
+
+### Variables d'environnement — récapitulatif
+
+| Variable | Rôle | Défaut |
+|---|---|---|
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | envoi des e-mails | — (les 4 à renseigner) |
+| `ADMIN_USER` / `ADMIN_PASS` | identifiants admin | `Famiartisanal` / `Fami+2026*` |
+| `DATA_DIR` | dossier de stockage | `./data` (mettre `/data` + volume sur Railway) |
+| `SESSION_SECRET` | secret de signature des sessions | dérivé des identifiants admin |
+
 ## Fonctionnalités
 
 - Design bois / beige / crème / vert Famiflora, responsive (PC, tablette, smartphone)
@@ -69,6 +105,7 @@ npm start          # http://localhost:3000
 - Cases d'engagement + RGPD obligatoires
 - Page de remerciement avec récapitulatif + impression de la fiche d'inscription
 - Envoi automatique des e-mails (accusé candidat + notification organisateur avec photos)
+- Espace admin : consultation, validation/refus (avec e-mails), factures et export Excel
 
 ## Contact
 

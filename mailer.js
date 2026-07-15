@@ -212,4 +212,137 @@ async function sendPreinscription(data, photos) {
   }
 }
 
-module.exports = { isConfigured, sendPreinscription, LABELS };
+// ---------------------------------------------------------------------
+//  E-mails de décision (validation / refus / facture)
+// ---------------------------------------------------------------------
+function emailShell(heading, innerHtml) {
+  return `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#faf4e8;font-family:Arial,Helvetica,sans-serif;color:#3a2d1e;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#faf4e8;padding:24px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(70,51,31,.12);">
+        <tr><td style="background:linear-gradient(180deg,#7a5a3a,#5f4630);border-bottom:6px solid #76b82a;padding:26px 30px;text-align:center;">
+          <h1 style="margin:0;color:#faf4e8;font-family:Georgia,serif;font-size:21px;">Week-end Artisanal — Famiflora</h1>
+          <p style="margin:8px 0 0;color:#f0e6d6;font-size:14px;">2ᵉ édition · Mouscron</p>
+        </td></tr>
+        <tr><td style="padding:30px;">
+          <h2 style="margin:0 0 16px;color:#46331f;font-family:Georgia,serif;font-size:20px;">${heading}</h2>
+          ${innerHtml}
+        </td></tr>
+        <tr><td style="background:#46331f;color:#cbb99f;text-align:center;padding:16px;font-size:12px;">
+          Famiflora · Rue Jules Vantieghem 14 · 7711 Mouscron<br>
+          📞 056 33 66 00 · ✉️ cyril.loiseau@famiflora.be
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
+const signatureHtml = `<p style="margin:18px 0 0;font-size:15px;line-height:1.6;">
+  Bien cordialement,<br><strong>L'équipe d'organisation du Week-end Artisanal de Famiflora</strong>
+</p>`;
+
+// --- Validation (candidature retenue) --------------------------------
+async function sendValidation(data) {
+  if (!data.email) return;
+  const prenom = escapeHtml((data.nom || '').split(' ')[0] || '');
+  const inner = `
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">Bonjour ${prenom},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Nous avons le plaisir de vous informer que votre candidature au <strong>Week-end Artisanal de Famiflora</strong>
+      a été <strong>retenue</strong>. 🎉 Nous serons ravis de vous compter parmi nos exposants.
+    </p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Vous recevrez prochainement, par e-mail, la <strong>facture</strong> correspondant à la formule de participation
+      que vous avez choisie. Le règlement de celle-ci confirmera définitivement votre emplacement.
+    </p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Nous restons à votre entière disposition pour toute question et vous remercions chaleureusement de votre confiance.
+    </p>
+    ${signatureHtml}`;
+  const text = `Bonjour ${(data.nom || '').split(' ')[0] || ''},\n\n`
+    + `Nous avons le plaisir de vous informer que votre candidature au Week-end Artisanal de Famiflora a été retenue. `
+    + `Nous serons ravis de vous compter parmi nos exposants.\n\n`
+    + `Vous recevrez prochainement, par e-mail, la facture correspondant à la formule choisie. Son règlement confirmera définitivement votre emplacement.\n\n`
+    + `Nous restons à votre disposition pour toute question et vous remercions de votre confiance.\n\n`
+    + `L'équipe d'organisation du Week-end Artisanal de Famiflora`;
+  await getTransport().sendMail({
+    from: EXPEDITEUR, to: data.email,
+    subject: 'Votre candidature au Week-end Artisanal est retenue ✅',
+    text, html: emailShell('✅ Votre candidature est retenue', inner),
+  });
+}
+
+// --- Refus (candidature non retenue) ---------------------------------
+async function sendRejection(data) {
+  if (!data.email) return;
+  const prenom = escapeHtml((data.nom || '').split(' ')[0] || '');
+  const inner = `
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">Bonjour ${prenom},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Nous vous remercions sincèrement de l'intérêt que vous portez au <strong>Week-end Artisanal de Famiflora</strong>
+      et du temps consacré à votre pré-inscription.
+    </p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Le nombre de places étant limité, nous veillons à préserver un équilibre et une diversité entre les exposants.
+      Après une étude attentive de l'ensemble des candidatures, nous ne sommes malheureusement pas en mesure de retenir
+      la vôtre pour cette édition.
+    </p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Ce choix ne remet nullement en cause la qualité de votre travail. Nous serions heureux de pouvoir étudier à nouveau
+      votre candidature lors d'une prochaine édition et vous encourageons vivement à vous représenter.
+    </p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Nous vous remercions de votre compréhension et vous souhaitons une pleine réussite dans vos projets.
+    </p>
+    ${signatureHtml}`;
+  const text = `Bonjour ${(data.nom || '').split(' ')[0] || ''},\n\n`
+    + `Nous vous remercions sincèrement de l'intérêt porté au Week-end Artisanal de Famiflora et du temps consacré à votre pré-inscription.\n\n`
+    + `Le nombre de places étant limité, nous veillons à préserver un équilibre et une diversité entre les exposants. Après une étude attentive de l'ensemble des candidatures, nous ne sommes malheureusement pas en mesure de retenir la vôtre pour cette édition.\n\n`
+    + `Ce choix ne remet nullement en cause la qualité de votre travail : nous serions heureux d'étudier à nouveau votre candidature lors d'une prochaine édition.\n\n`
+    + `Nous vous remercions de votre compréhension et vous souhaitons une pleine réussite dans vos projets.\n\n`
+    + `L'équipe d'organisation du Week-end Artisanal de Famiflora`;
+  await getTransport().sendMail({
+    from: EXPEDITEUR, to: data.email,
+    subject: 'Votre candidature au Week-end Artisanal de Famiflora',
+    text, html: emailShell('Votre candidature au Week-end Artisanal', inner),
+  });
+}
+
+// --- Envoi de la facture ---------------------------------------------
+async function sendFacture(data, attachment) {
+  if (!data.email) return;
+  const prenom = escapeHtml((data.nom || '').split(' ')[0] || '');
+  const inner = `
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">Bonjour ${prenom},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Suite à la validation de votre participation au <strong>Week-end Artisanal de Famiflora</strong>, veuillez trouver
+      ci-joint la <strong>facture</strong> correspondant à votre réservation.
+    </p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Nous vous remercions de bien vouloir procéder à son règlement selon les modalités qui y sont indiquées. Le paiement
+      confirmera définitivement votre emplacement pour l'événement.
+    </p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.6;">
+      Pour toute question relative à cette facture, n'hésitez pas à nous contacter.
+    </p>
+    ${signatureHtml}`;
+  const text = `Bonjour ${(data.nom || '').split(' ')[0] || ''},\n\n`
+    + `Suite à la validation de votre participation au Week-end Artisanal de Famiflora, veuillez trouver ci-joint la facture correspondant à votre réservation.\n\n`
+    + `Merci de procéder à son règlement selon les modalités indiquées ; le paiement confirmera définitivement votre emplacement.\n\n`
+    + `Pour toute question, n'hésitez pas à nous contacter.\n\n`
+    + `L'équipe d'organisation du Week-end Artisanal de Famiflora`;
+  await getTransport().sendMail({
+    from: EXPEDITEUR, to: data.email,
+    subject: 'Votre facture — Week-end Artisanal de Famiflora',
+    text, html: emailShell('🧾 Votre facture', inner),
+    attachments: attachment ? [attachment] : [],
+  });
+}
+
+module.exports = {
+  isConfigured, sendPreinscription, LABELS,
+  sendValidation, sendRejection, sendFacture,
+};
