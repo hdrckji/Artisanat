@@ -30,17 +30,20 @@ Le serveur envoie lui-même les e-mails via votre serveur SMTP :
 ### Étapes
 
 1. Copier `.env.example` en `.env` (en local) **ou** ajouter les variables dans l'onglet **Variables** de Railway.
-2. Renseigner les identifiants de votre serveur SMTP :
+2. Renseigner **seulement ces 4 variables** (les identifiants de votre serveur SMTP) :
    ```
    SMTP_HOST=smtp.exemple.be
    SMTP_PORT=587
-   SMTP_SECURE=false          # true uniquement pour le port 465
    SMTP_USER=no-reply@famiflora.be
    SMTP_PASS=•••••••••
-   MAIL_FROM=Week-end Artisanal Famiflora <no-reply@famiflora.be>
-   MAIL_TO=cyril.loiseau@famiflora.be
    ```
 3. Redéployer / relancer. Le serveur affiche au démarrage : `✅ Service e-mail (SMTP) configuré.`
+
+> **Les autres variables sont facultatives** — elles ont déjà une valeur par défaut, inutile de les ajouter :
+> - `SMTP_SECURE` → déduit du port (465 = SSL, sinon STARTTLS) ;
+> - `MAIL_FROM` → par défaut = `SMTP_USER` ;
+> - `MAIL_TO` (destinataire des pré-inscriptions) → par défaut = `cyril.loiseau@famiflora.be` ;
+> - `MAIL_BCC` → copie cachée, aucune par défaut.
 
 > Tant que le SMTP n'est pas configuré, le formulaire reste **fonctionnel en mode démonstration** :
 > il valide tout et affiche la page de remerciement, mais aucun e-mail n'est envoyé (les soumissions
