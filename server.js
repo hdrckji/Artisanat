@@ -49,6 +49,7 @@ app.post(
       try {
         const r = await mailer.sendPreinscription(data, photos, record.langue);
         mailed = r.applicant;
+        store.setMailState(record.id, 'accuse', { state: r.applicant ? 'sent' : 'failed', error: r.applicant ? '' : r.errors.join(' | ') });
         if (!r.organizer || !r.applicant) {
           const parts = [];
           if (!r.organizer) parts.push('notification organisateur');
@@ -57,10 +58,12 @@ app.post(
           console.error(`⚠️  E-mail pré-inscription non envoyé (${parts.join(' + ')}) :`, r.errors.join(' | '));
         }
       } catch (err) {
+        store.setMailState(record.id, 'accuse', { state: 'failed', error: String(err) });
         store.addEmailWarning(record.id, { type: 'preinscription', echec: 'e-mails', error: String(err) });
         console.error('Envoi e-mail pré-inscription échoué (soumission conservée) :', err);
       }
     } else {
+      store.setMailState(record.id, 'accuse', { state: 'skipped' });
       console.warn('⚠️  SMTP non configuré — aucun e-mail envoyé (soumission conservée).');
     }
     return res.status(200).json({ ok: true, id: record.id, mailed });
@@ -143,12 +146,17 @@ app.post('/api/admin/submissions/:id/validate', async (req, res) => {
   store.setStatus(rec.id, 'valide');
   let mailed = false, mailError = false;
   if (mailer.isConfigured()) {
-    try { await mailer.sendValidation(rec.fields, rec.langue); mailed = true; }
-    catch (err) {
+    try {
+      await mailer.sendValidation(rec.fields, rec.langue); mailed = true;
+      store.setMailState(rec.id, 'decision', { state: 'sent', type: 'validation' });
+    } catch (err) {
       mailError = true;
+      store.setMailState(rec.id, 'decision', { state: 'failed', type: 'validation', error: String(err) });
       store.addEmailWarning(rec.id, { type: 'validation', echec: 'e-mail de validation', error: String(err) });
       console.error('E-mail de validation échoué :', err);
     }
+  } else {
+    store.setMailState(rec.id, 'decision', { state: 'skipped', type: 'validation' });
   }
   res.json({ ok: true, submission: store.get(rec.id), mailed, mailError });
 });
@@ -160,12 +168,17 @@ app.post('/api/admin/submissions/:id/reject', async (req, res) => {
   store.setStatus(rec.id, 'refuse');
   let mailed = false, mailError = false;
   if (mailer.isConfigured()) {
-    try { await mailer.sendRejection(rec.fields, rec.langue); mailed = true; }
-    catch (err) {
+    try {
+      await mailer.sendRejection(rec.fields, rec.langue); mailed = true;
+      store.setMailState(rec.id, 'decision', { state: 'sent', type: 'refus' });
+    } catch (err) {
       mailError = true;
+      store.setMailState(rec.id, 'decision', { state: 'failed', type: 'refus', error: String(err) });
       store.addEmailWarning(rec.id, { type: 'refus', echec: 'e-mail de refus', error: String(err) });
       console.error('E-mail de refus échoué :', err);
     }
+  } else {
+    store.setMailState(rec.id, 'decision', { state: 'skipped', type: 'refus' });
   }
   res.json({ ok: true, submission: store.get(rec.id), mailed, mailError });
 });
@@ -179,6 +192,7 @@ app.post('/api/admin/submissions/:id/facture', uploadFacture.single('facture'), 
 
   if (!mailer.isConfigured()) {
     // Fichier conservé mais non envoyé faute de SMTP.
+    store.setMailState(rec.id, 'facture', { state: 'skipped' });
     return res.status(200).json({ ok: true, submission: store.get(rec.id), mailed: false });
   }
   try {
@@ -187,9 +201,11 @@ app.post('/api/admin/submissions/:id/facture', uploadFacture.single('facture'), 
       content: req.file.buffer,
       contentType: req.file.mimetype,
     }, rec.langue);
-    const updated = store.markFactureEnvoyee(rec.id);
-    res.json({ ok: true, submission: updated, mailed: true });
+    store.markFactureEnvoyee(rec.id);
+    store.setMailState(rec.id, 'facture', { state: 'sent' });
+    res.json({ ok: true, submission: store.get(rec.id), mailed: true });
   } catch (err) {
+    store.setMailState(rec.id, 'facture', { state: 'failed', error: String(err) });
     store.addEmailWarning(rec.id, { type: 'facture', echec: 'envoi de la facture', error: String(err) });
     console.error('Envoi de la facture échoué :', err);
     res.status(500).json({ ok: false, error: 'mail_failed', submission: store.get(rec.id) });

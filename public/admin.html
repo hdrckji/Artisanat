@@ -129,6 +129,24 @@ dl.recap dd{word-break:break-word}
 .export-cols label{display:flex;align-items:center;gap:.5rem;font-size:.9rem}
 .export-cols input{width:18px;height:18px;accent-color:var(--vert)}
 .spin{opacity:.6;pointer-events:none}
+
+/* État des 3 e-mails */
+.mst-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px dashed var(--beige);font-size:.92rem}
+.mst-row:last-child{border-bottom:none}
+.mst-label{font-weight:600;color:var(--brun)}
+.mst{font-weight:700;font-size:.8rem;border-radius:999px;padding:.15rem .65rem;white-space:nowrap}
+.mst.ok{background:#eaf6d9;color:var(--vert-fonce)}
+.mst.fail{background:#fdecea;color:#c0392b}
+.mst.skip{background:#f0eadf;color:var(--gris-doux)}
+.mst.none{background:#f3e8d6;color:var(--gris-doux)}
+
+/* Onglet Modèles */
+.tpl-intro{background:var(--beige-clair);border-left:5px solid var(--terre);border-radius:10px;padding:.8rem 1rem;margin-bottom:1rem;font-size:.9rem}
+.tpl-card{background:var(--blanc);border-radius:12px;box-shadow:var(--ombre);padding:1rem 1.2rem;margin-bottom:1rem}
+.tpl-card h3{font-size:1.05rem;margin-bottom:.5rem}
+.tpl-obj{font-size:.9rem;margin-bottom:.5rem}
+.tpl-text{width:100%;min-height:190px;font-family:inherit;font-size:.88rem;line-height:1.5;background:var(--creme);border:2px solid var(--beige);border-radius:10px;padding:.7rem .85rem;resize:vertical}
+.tpl-copy{margin-top:.6rem}
 </style>
 </head>
 <body>
@@ -169,6 +187,7 @@ dl.recap dd{word-break:break-word}
       <button class="tab active" data-status="pending"><span data-i18n="tab_pending">📋 Pré-inscriptions</span> <span class="count" id="c-pending">0</span></button>
       <button class="tab" data-status="valide"><span data-i18n="tab_valide">✅ Validées</span> <span class="count" id="c-valide">0</span></button>
       <button class="tab" data-status="refuse"><span data-i18n="tab_refuse">❌ Non validées</span> <span class="count" id="c-refuse">0</span></button>
+      <button class="tab" data-status="templates"><span data-i18n="tab_templates">📧 Modèles</span></button>
     </div>
 
     <div class="toolbar" id="toolbar" style="display:none">
@@ -267,7 +286,20 @@ const STR = {
   warn_clear:['Marquer comme traité','Als behandeld markeren'],
   m_decision_mailerr:["Décision enregistrée, mais l'e-mail n'a pas pu être envoyé au candidat.",'Beslissing opgeslagen, maar de e-mail kon niet naar de kandidaat worden verzonden.'],
   mailban_1:['⚠️ ','⚠️ '],
-  mailban_2:[' inscription(s) avec un e-mail non envoyé — voir les fiches marquées « E-mail non parti ».',' inschrijving(en) met een niet-verzonden e-mail — zie de fiches met « E-mail niet verzonden ».']
+  mailban_2:[' inscription(s) avec un e-mail non envoyé — voir les fiches marquées « E-mail non parti ».',' inschrijving(en) met een niet-verzonden e-mail — zie de fiches met « E-mail niet verzonden ».'],
+  mails_title:['📧 État des e-mails','📧 Status van de e-mails'],
+  mail_accuse:['Accusé de réception','Ontvangstbevestiging'],
+  mail_decision:['Décision (validation / refus)','Beslissing (goedkeuring / weigering)'],
+  mail_facture:['Facture','Factuur'],
+  mst_sent:['Envoyé','Verzonden'],
+  mst_failed:['Échec','Mislukt'],
+  mst_skipped:['Non envoyé (SMTP off)','Niet verzonden (SMTP uit)'],
+  mst_none:['Pas encore','Nog niet'],
+  tab_templates:['📧 Modèles','📧 Sjablonen'],
+  tpl_intro:['Le texte des e-mails, prêt à copier-coller (utile si un envoi automatique a échoué). Remplacez [Prénom] par le prénom de la personne.','De tekst van de e-mails, klaar om te kopiëren (handig als een automatische verzending mislukte). Vervang [Voornaam] door de voornaam van de persoon.'],
+  tpl_object:['Objet','Onderwerp'],
+  copy:['Copier','Kopiëren'],
+  copied:['✓ Copié','✓ Gekopieerd']
 };
 // Libellés des champs (détail) FR/NL
 const FIELD_LABELS = [
@@ -300,6 +332,114 @@ const COL_NL = {
   facture_envoyee:'Factuur verzonden', facture_payee:'Factuur betaald'
 };
 const DEFAULT_EXPORT = ['contact','entreprise','stand','heure_arrivee','formule','facture_envoyee','facture_payee'];
+
+/* Modèles d'e-mails (texte prêt à copier-coller), FR / NL */
+const TEMPLATES = [
+  { key:'accuse',
+    title:['Accusé de réception','Ontvangstbevestiging'],
+    subject:['Votre pré-inscription au Week-end Artisanal est bien reçue',"Uw voorinschrijving voor het Ambachtenweekend is goed ontvangen"],
+    body:[
+`Bonjour [Prénom],
+
+Nous vous confirmons la bonne réception de votre pré-inscription au Week-end Artisanal organisé par Famiflora. Votre demande a bien été enregistrée.
+
+Votre dossier va maintenant être étudié par notre équipe. Le nombre de places étant limité, nous accordons une attention particulière à la diversité des exposants. Vous recevrez prochainement un e-mail vous informant de la décision concernant votre candidature.
+
+Si votre candidature est retenue, la facture correspondant à la formule choisie vous sera envoyée par e-mail environ un mois avant l'événement.
+
+Important : ceci est une pré-inscription ; votre participation ne sera définitive qu'après validation par Famiflora.
+
+Cordialement,
+L'équipe d'organisation du Week-end Artisanal de Famiflora`,
+`Hallo [Voornaam],
+
+Wij bevestigen de goede ontvangst van uw voorinschrijving voor het Ambachtenweekend georganiseerd door Famiflora. Uw aanvraag is goed geregistreerd.
+
+Uw dossier wordt nu door ons team beoordeeld. Aangezien het aantal plaatsen beperkt is, besteden wij bijzondere aandacht aan de diversiteit van de exposanten. U ontvangt binnenkort een e-mail met de beslissing over uw kandidatuur.
+
+Als uw kandidatuur wordt weerhouden, ontvangt u ongeveer één maand vóór het evenement per e-mail de factuur voor de gekozen formule.
+
+Belangrijk: dit is een voorinschrijving; uw deelname is pas definitief na goedkeuring door Famiflora.
+
+Met vriendelijke groeten,
+Het organisatieteam van het Ambachtenweekend van Famiflora`] },
+  { key:'validation',
+    title:['Validation (candidature retenue)','Goedkeuring (kandidatuur weerhouden)'],
+    subject:['Votre candidature au Week-end Artisanal est retenue','Uw kandidatuur voor het Ambachtenweekend is weerhouden'],
+    body:[
+`Bonjour [Prénom],
+
+Nous avons le plaisir de vous informer que votre candidature au Week-end Artisanal de Famiflora a été retenue. Nous serons ravis de vous compter parmi nos exposants.
+
+Vous recevrez prochainement, par e-mail, la facture correspondant à la formule de participation que vous avez choisie. Le règlement de celle-ci confirmera définitivement votre emplacement.
+
+Nous restons à votre entière disposition pour toute question et vous remercions chaleureusement de votre confiance.
+
+Cordialement,
+L'équipe d'organisation du Week-end Artisanal de Famiflora`,
+`Hallo [Voornaam],
+
+Wij hebben het genoegen u te melden dat uw kandidatuur voor het Ambachtenweekend van Famiflora werd weerhouden. Wij zijn verheugd u als exposant te mogen verwelkomen.
+
+U ontvangt binnenkort per e-mail de factuur voor de door u gekozen deelnameformule. De betaling ervan bevestigt definitief uw standplaats.
+
+Wij blijven volledig ter beschikking voor al uw vragen en danken u van harte voor uw vertrouwen.
+
+Met vriendelijke groeten,
+Het organisatieteam van het Ambachtenweekend van Famiflora`] },
+  { key:'refus',
+    title:['Refus (candidature non retenue)','Weigering (kandidatuur niet weerhouden)'],
+    subject:['Votre candidature au Week-end Artisanal de Famiflora','Uw kandidatuur voor het Ambachtenweekend van Famiflora'],
+    body:[
+`Bonjour [Prénom],
+
+Nous vous remercions sincèrement de l'intérêt que vous portez au Week-end Artisanal de Famiflora et du temps consacré à votre pré-inscription.
+
+Le nombre de places étant limité, nous veillons à préserver un équilibre et une diversité entre les exposants. Après une étude attentive de l'ensemble des candidatures, nous ne sommes malheureusement pas en mesure de retenir la vôtre pour cette édition.
+
+Ce choix ne remet nullement en cause la qualité de votre travail. Nous serions heureux d'étudier à nouveau votre candidature lors d'une prochaine édition et vous encourageons vivement à vous représenter.
+
+Nous vous remercions de votre compréhension et vous souhaitons une pleine réussite dans vos projets.
+
+Cordialement,
+L'équipe d'organisation du Week-end Artisanal de Famiflora`,
+`Hallo [Voornaam],
+
+Wij danken u oprecht voor uw interesse in het Ambachtenweekend van Famiflora en voor de tijd die u aan uw voorinschrijving besteedde.
+
+Aangezien het aantal plaatsen beperkt is, waken wij over een evenwicht en een diversiteit tussen de exposanten. Na een aandachtige beoordeling van alle kandidaturen kunnen wij de uwe voor deze editie jammer genoeg niet weerhouden.
+
+Deze keuze doet geenszins afbreuk aan de kwaliteit van uw werk. Wij zouden uw kandidatuur graag opnieuw bekijken bij een volgende editie en moedigen u van harte aan u opnieuw kandidaat te stellen.
+
+Wij danken u voor uw begrip en wensen u veel succes met uw projecten.
+
+Met vriendelijke groeten,
+Het organisatieteam van het Ambachtenweekend van Famiflora`] },
+  { key:'facture',
+    title:['Envoi de la facture','Verzending van de factuur'],
+    subject:['Votre facture — Week-end Artisanal de Famiflora','Uw factuur — Ambachtenweekend van Famiflora'],
+    body:[
+`Bonjour [Prénom],
+
+Suite à la validation de votre participation au Week-end Artisanal de Famiflora, veuillez trouver ci-joint la facture correspondant à votre réservation.
+
+Nous vous remercions de bien vouloir procéder à son règlement selon les modalités qui y sont indiquées. Le paiement confirmera définitivement votre emplacement pour l'événement.
+
+Pour toute question relative à cette facture, n'hésitez pas à nous contacter.
+
+Cordialement,
+L'équipe d'organisation du Week-end Artisanal de Famiflora`,
+`Hallo [Voornaam],
+
+Naar aanleiding van de goedkeuring van uw deelname aan het Ambachtenweekend van Famiflora vindt u hierbij de factuur voor uw reservering.
+
+Gelieve de betaling uit te voeren volgens de vermelde voorwaarden. De betaling bevestigt definitief uw standplaats voor het evenement.
+
+Voor elke vraag over deze factuur kunt u ons steeds contacteren.
+
+Met vriendelijke groeten,
+Het organisatieteam van het Ambachtenweekend van Famiflora`] },
+];
 
 let LANG = 'fr';
 try { LANG = localStorage.getItem('wa_lang') || 'fr'; } catch (e) {}
@@ -399,8 +539,9 @@ function cardHtml(r){
 }
 function renderTab(){
   const list = $('#list');
-  const rows = SUBS.filter(r => r.status === CURRENT_TAB);
   $('#toolbar').style.display = (CURRENT_TAB==='valide') ? 'flex' : 'none';
+  if (CURRENT_TAB === 'templates'){ renderTemplates(); return; }
+  const rows = SUBS.filter(r => r.status === CURRENT_TAB);
   if (!rows.length){ list.innerHTML = `<div class="empty">${T('empty')}</div>`; return; }
   if (CURRENT_TAB === 'valide'){
     const sans = rows.filter(r => !(r.facture && r.facture.envoyeeAt));
@@ -413,6 +554,41 @@ function renderTab(){
     list.innerHTML = rows.map(cardHtml).join('');
   }
   document.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
+}
+
+/* ---------- Onglet Modèles d'e-mails ---------- */
+function renderTemplates(){
+  const li = LANG==='nl'?1:0;
+  let html = `<div class="tpl-intro">${T('tpl_intro')}</div>`;
+  TEMPLATES.forEach((t,i)=>{
+    html += `<div class="tpl-card">
+      <h3>${esc(t.title[li])}</h3>
+      <div class="tpl-obj"><strong>${T('tpl_object')} :</strong> ${esc(t.subject[li])}</div>
+      <textarea class="tpl-text" id="tpl-${i}" readonly>${esc(t.body[li])}</textarea>
+      <button class="btn btn-sm tpl-copy" data-tpl="${i}">${T('copy')}</button>
+    </div>`;
+  });
+  $('#list').innerHTML = html;
+  document.querySelectorAll('.tpl-copy').forEach(b=>b.addEventListener('click',()=>copyTemplate(+b.dataset.tpl, b)));
+}
+function copyTemplate(i, btn){
+  const ta = document.getElementById('tpl-'+i);
+  const done = ()=>{ const old=T('copy'); btn.textContent=T('copied'); setTimeout(()=>btn.textContent=old,1500); };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(done).catch(()=>{ ta.select(); document.execCommand('copy'); done(); });
+    } else { ta.select(); document.execCommand('copy'); done(); }
+  } catch(e){ ta.select(); document.execCommand('copy'); done(); }
+}
+
+/* ---------- Ligne d'état d'un e-mail ---------- */
+function mailRow(labelKey, m){
+  let badge;
+  if (m && m.state==='sent') badge = `<span class="mst ok">✅ ${T('mst_sent')}${m.at?' · '+fmtDate(m.at):''}</span>`;
+  else if (m && m.state==='failed') badge = `<span class="mst fail">❌ ${T('mst_failed')}${m.at?' · '+fmtDate(m.at):''}</span>`;
+  else if (m && m.state==='skipped') badge = `<span class="mst skip">⏸ ${T('mst_skipped')}</span>`;
+  else badge = `<span class="mst none">${T('mst_none')}</span>`;
+  return `<div class="mst-row"><span class="mst-label">${T(labelKey)}</span>${badge}</div>`;
 }
 
 function openDetail(id){
@@ -450,11 +626,22 @@ function openDetail(id){
       <button class="btn-ghost btn-sm" data-act="clearwarn" data-id="${r.id}">${T('warn_clear')}</button>
     </div>` : '';
 
+  const mails = r.mails || {};
+  const factureMail = mails.facture || ((r.facture && r.facture.envoyeeAt) ? { state:'sent', at:r.facture.envoyeeAt } : null);
+  const mailsPanel = `
+    <div class="action-box">
+      <h3>${T('mails_title')}</h3>
+      ${mailRow('mail_accuse', mails.accuse)}
+      ${mailRow('mail_decision', mails.decision)}
+      ${mailRow('mail_facture', factureMail)}
+    </div>`;
+
   $('#detailBody').innerHTML = `
     <p class="status-line ${r.status}">${T('statut')} ${T('st_'+r.status)}</p>
     ${warnBox}
     ${photos ? `<div class="photos">${photos}</div>` : ''}
     ${recap}
+    ${mailsPanel}
     <div class="action-box">
       <h3>${T('decision')}</h3>
       ${decision}

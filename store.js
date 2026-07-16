@@ -79,6 +79,7 @@ function create(body, photoFiles) {
     facture: null,                // { file, envoyeeAt }
     facturePayee: false,
     emailWarnings: [],            // e-mails qui n'ont pas pu être envoyés
+    mails: {},                    // état des 3 e-mails : accuse / decision / facture
   };
 
   const list = readAll();
@@ -134,6 +135,15 @@ function clearEmailWarnings(id) {
   return update(id, { emailWarnings: [] });
 }
 
+/** Enregistre l'état d'un des 3 e-mails (accuse | decision | facture). */
+function setMailState(id, key, info) {
+  const rec = get(id);
+  if (!rec) return null;
+  const mails = Object.assign({}, rec.mails);
+  mails[key] = Object.assign({ at: new Date().toISOString() }, info);
+  return update(id, { mails });
+}
+
 function markFactureEnvoyee(id) {
   const rec = get(id);
   if (!rec || !rec.facture) return null;
@@ -156,5 +166,5 @@ module.exports = {
   DATA_DIR, FIELD_KEYS,
   create, list, get, update, setStatus,
   saveFacture, markFactureEnvoyee, photoPath, facturePath,
-  addEmailWarning, clearEmailWarnings,
+  addEmailWarning, clearEmailWarnings, setMailState,
 };
