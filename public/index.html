@@ -930,10 +930,12 @@ form.addEventListener('submit', async e => {
 
   if (ENDPOINT){
     btn.disabled = true; btn.textContent = 'Envoi en cours…';
+    window.feeShow && window.feeShow();          // la fée occupe l'attente (envoi photos + e-mails)
     try{
       const res = await fetch(ENDPOINT, {method:'POST', body:fd, headers:{'Accept':'application/json'}});
       if (!res.ok) throw new Error();
     }catch(err){
+      window.feeHide && window.feeHide();
       btn.disabled = false; btn.textContent = 'ENVOYER MA PRÉ-INSCRIPTION';
       alert("L'envoi a échoué. Vérifiez votre connexion et réessayez, ou contactez-nous : cyril.loiseau@famiflora.be");
       return;
@@ -941,6 +943,7 @@ form.addEventListener('submit', async e => {
   }
 
   /* récapitulatif + page de remerciement */
+  window.feeHide && window.feeHide();
   showThanks(fd);
   try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
 });
@@ -1032,5 +1035,6 @@ const galleryPhotos = Array.from({length: GALLERY_COUNT}, (_, i) =>
   });
 })();
 </script>
+<script src="fee.js" defer></script>
 </body>
 </html>
