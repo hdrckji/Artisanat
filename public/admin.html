@@ -32,24 +32,26 @@ button{font-family:'Karla',sans-serif;cursor:pointer}
 .btn-ghost:hover{background:var(--beige-clair)}
 .btn-sm{padding:.4rem .9rem;font-size:.85rem}
 
-/* ---------- Connexion ---------- */
+.lang-switch{display:flex;gap:.25rem;background:rgba(0,0,0,.28);border:1px solid rgba(250,244,232,.35);border-radius:999px;padding:.2rem}
+.lang-switch button{border:none;background:transparent;color:#f0e6d6;font-weight:700;font-size:.8rem;padding:.3rem .65rem;border-radius:999px}
+.lang-switch button.active{background:var(--vert);color:#fff}
+
 #login{min-height:100vh;display:grid;place-items:center;padding:1.5rem}
 .login-card{background:var(--blanc);border-radius:var(--radius);box-shadow:var(--ombre);
   padding:2.4rem;width:100%;max-width:400px;border-top:6px solid var(--vert);text-align:center}
 .login-card h1{font-size:1.5rem;margin-bottom:.3rem}
 .login-card p{color:var(--gris-doux);margin-bottom:1.6rem;font-size:.9rem}
 .login-card label{display:block;text-align:left;font-weight:700;font-size:.85rem;margin:.9rem 0 .3rem}
-.login-card input{width:100%;font-size:1rem;background:var(--creme);border:2px solid var(--beige);
-  border-radius:10px;padding:.7rem .85rem}
+.login-card input{width:100%;font-size:1rem;background:var(--creme);border:2px solid var(--beige);border-radius:10px;padding:.7rem .85rem}
 .login-card input:focus{outline:none;border-color:var(--vert)}
 .login-card .btn{width:100%;margin-top:1.6rem;padding:.85rem}
 .login-err{color:var(--erreur);font-weight:700;font-size:.9rem;margin-top:1rem;min-height:1.1rem}
 
-/* ---------- Application ---------- */
 #app{display:none}
 header.top{background:linear-gradient(180deg,#7a5a3a,#5f4630);border-bottom:5px solid var(--vert);
   color:var(--creme);padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 header.top h1{color:var(--creme);font-size:1.25rem}
+.top-right{display:flex;align-items:center;gap:.8rem}
 .smtp-warn{background:#fdf3f1;color:#93261a;border:1px solid #e6b0aa;border-radius:10px;
   padding:.6rem 1rem;margin:1rem auto 0;max-width:1100px;font-size:.9rem;font-weight:600}
 .wrap{max-width:1100px;margin:0 auto;padding:1.4rem}
@@ -74,18 +76,13 @@ header.top h1{color:var(--creme);font-size:1.25rem}
 .badge.ok{background:#eaf6d9;color:var(--vert-fonce)}
 .badge.wait{background:#fdeee2;color:var(--terre)}
 .badge.paid{background:#e7f0fb;color:#2b6cb0}
-.section-sep{font-family:'Fraunces',serif;font-weight:700;color:var(--brun);margin:1.2rem 0 .6rem;font-size:1.05rem;
-  display:flex;align-items:center;gap:.5rem}
+.section-sep{font-family:'Fraunces',serif;font-weight:700;color:var(--brun);margin:1.2rem 0 .6rem;font-size:1.05rem;display:flex;align-items:center;gap:.5rem}
 .empty{color:var(--gris-doux);text-align:center;padding:2.5rem;background:var(--blanc);border-radius:12px}
 
-/* ---------- Modale détail ---------- */
-.overlay{position:fixed;inset:0;background:rgba(30,20,10,.6);display:none;z-index:50;
-  align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto}
+.overlay{position:fixed;inset:0;background:rgba(30,20,10,.6);display:none;z-index:50;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto}
 .overlay.open{display:flex}
-.modal{background:var(--creme);border-radius:var(--radius);max-width:760px;width:100%;box-shadow:var(--ombre);
-  border-top:6px solid var(--vert);margin:auto}
-.modal-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.2rem 1.4rem;
-  border-bottom:1px solid var(--beige);position:sticky;top:0;background:var(--creme);border-radius:var(--radius) var(--radius) 0 0;z-index:1}
+.modal{background:var(--creme);border-radius:var(--radius);max-width:760px;width:100%;box-shadow:var(--ombre);border-top:6px solid var(--vert);margin:auto}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.2rem 1.4rem;border-bottom:1px solid var(--beige);position:sticky;top:0;background:var(--creme);border-radius:var(--radius) var(--radius) 0 0;z-index:1}
 .modal-head h2{font-size:1.3rem}
 .modal-close{background:var(--beige);border:none;border-radius:50%;width:38px;height:38px;font-size:1.1rem}
 .modal-body{padding:1.4rem}
@@ -103,14 +100,25 @@ dl.recap dd{word-break:break-word}
 .status-line.valide{color:var(--vert-fonce)}
 .status-line.refuse{color:var(--erreur)}
 .status-line.pending{color:var(--terre)}
-.file-input{font-size:.9rem}
-.check-inline{display:flex;align-items:center;gap:.5rem;font-weight:600;margin-top:.3rem}
+.check-inline{display:flex;align-items:center;gap:.5rem;font-weight:600;margin-top:.9rem}
 .check-inline input{width:20px;height:20px;accent-color:var(--vert)}
 .msg{font-size:.88rem;margin-top:.6rem;font-weight:600}
 .msg.ok{color:var(--vert-fonce)}
 .msg.err{color:var(--erreur)}
 
-/* ---------- Modale export ---------- */
+/* Zone de dépôt de la facture (améliorée) */
+.facture-drop{position:relative;border:2px dashed var(--terre);border-radius:12px;background:var(--beige-clair);
+  padding:1.1rem 1.2rem;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin:.4rem 0 .8rem}
+.facture-drop:hover,.facture-drop.drag{border-color:var(--vert);background:#f2f7e8}
+.facture-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.facture-drop .fd-icon{font-size:1.8rem}
+.facture-drop .fd-title{font-weight:700;color:var(--brun-fonce);margin-top:.2rem}
+.facture-drop .fd-sub{font-size:.82rem;color:var(--gris-doux)}
+.facture-drop.filled{border-style:solid;border-color:var(--vert);background:#f4faec}
+.facture-drop .fd-file{display:none;font-weight:700;color:var(--vert-fonce);word-break:break-all}
+.facture-drop.filled .fd-file{display:block}
+.facture-drop.filled .fd-empty{display:none}
+
 .export-cols{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .9rem;margin:1rem 0}
 @media(max-width:560px){.export-cols{grid-template-columns:1fr}}
 .export-cols label{display:flex;align-items:center;gap:.5rem;font-size:.9rem}
@@ -123,13 +131,13 @@ dl.recap dd{word-break:break-word}
 <!-- ==================== CONNEXION ==================== -->
 <div id="login">
   <form class="login-card" id="loginForm">
-    <h1>🔐 Espace administrateur</h1>
+    <h1 data-i18n="login_title">🔐 Espace administrateur</h1>
     <p>Week-end Artisanal — Famiflora</p>
-    <label for="user">Identifiant</label>
+    <label for="user" data-i18n="login_user">Identifiant</label>
     <input type="text" id="user" autocomplete="username" required>
-    <label for="pass">Mot de passe</label>
+    <label for="pass" data-i18n="login_pass">Mot de passe</label>
     <input type="password" id="pass" autocomplete="current-password" required>
-    <button type="submit" class="btn">Se connecter</button>
+    <button type="submit" class="btn" data-i18n="login_btn">Se connecter</button>
     <div class="login-err" id="loginErr"></div>
   </form>
 </div>
@@ -137,22 +145,28 @@ dl.recap dd{word-break:break-word}
 <!-- ==================== APPLICATION ==================== -->
 <div id="app">
   <header class="top">
-    <h1>🌿 Pré-inscriptions — Week-end Artisanal</h1>
-    <button class="btn-ghost btn-sm" id="logoutBtn">Se déconnecter</button>
+    <h1 data-i18n="app_title">🌿 Pré-inscriptions — Week-end Artisanal</h1>
+    <div class="top-right">
+      <div class="lang-switch" role="group" aria-label="Langue / Taal">
+        <button type="button" data-lang="fr" class="active">FR</button>
+        <button type="button" data-lang="nl">NL</button>
+      </div>
+      <button class="btn-ghost btn-sm" id="logoutBtn" data-i18n="logout">Se déconnecter</button>
+    </div>
   </header>
-  <div id="smtpWarn" class="smtp-warn" style="display:none">
+  <div id="smtpWarn" class="smtp-warn" style="display:none" data-i18n="smtp_warn">
     ⚠️ Le service e-mail (SMTP) n'est pas configuré : les décisions sont enregistrées mais aucun e-mail ne sera envoyé aux candidats.
   </div>
 
   <div class="wrap">
     <div class="tabs" id="tabs">
-      <button class="tab active" data-status="pending">📋 Pré-inscriptions <span class="count" id="c-pending">0</span></button>
-      <button class="tab" data-status="valide">✅ Validées <span class="count" id="c-valide">0</span></button>
-      <button class="tab" data-status="refuse">❌ Non validées <span class="count" id="c-refuse">0</span></button>
+      <button class="tab active" data-status="pending"><span data-i18n="tab_pending">📋 Pré-inscriptions</span> <span class="count" id="c-pending">0</span></button>
+      <button class="tab" data-status="valide"><span data-i18n="tab_valide">✅ Validées</span> <span class="count" id="c-valide">0</span></button>
+      <button class="tab" data-status="refuse"><span data-i18n="tab_refuse">❌ Non validées</span> <span class="count" id="c-refuse">0</span></button>
     </div>
 
     <div class="toolbar" id="toolbar" style="display:none">
-      <button class="btn btn-sm" id="exportBtn">⬇️ Exporter en Excel</button>
+      <button class="btn btn-sm" id="exportBtn" data-i18n="export_btn">⬇️ Exporter en Excel</button>
     </div>
 
     <div id="list"></div>
@@ -174,15 +188,15 @@ dl.recap dd{word-break:break-word}
 <div class="overlay" id="exportOverlay">
   <div class="modal" style="max-width:620px">
     <div class="modal-head">
-      <h2>⬇️ Exporter en Excel</h2>
+      <h2 data-i18n="export_title">⬇️ Exporter en Excel</h2>
       <button class="modal-close" data-close-export>✕</button>
     </div>
     <div class="modal-body">
-      <p style="margin-bottom:.4rem">Cochez les informations à inclure (1 ligne = 1 artisan) :</p>
+      <p style="margin-bottom:.4rem" data-i18n="export_intro">Cochez les informations à inclure (1 ligne = 1 artisan) :</p>
       <div class="export-cols" id="exportCols"></div>
       <div class="action-row" style="justify-content:flex-end">
-        <button class="btn-ghost btn-sm" data-close-export>Annuler</button>
-        <button class="btn btn-sm" id="exportGo">Télécharger le fichier</button>
+        <button class="btn-ghost btn-sm" data-close-export data-i18n="cancel">Annuler</button>
+        <button class="btn btn-sm" id="exportGo" data-i18n="export_go">Télécharger le fichier</button>
       </div>
       <div class="msg" id="exportMsg"></div>
     </div>
@@ -190,34 +204,119 @@ dl.recap dd{word-break:break-word}
 </div>
 
 <script>
-/* ---------- Champs affichés dans le détail (ordre + libellés) ---------- */
+/* ---------- Dictionnaire FR/NL de l'admin ---------- */
+const STR = {
+  login_title:['🔐 Espace administrateur','🔐 Beheerdersruimte'],
+  login_user:['Identifiant','Gebruikersnaam'],
+  login_pass:['Mot de passe','Wachtwoord'],
+  login_btn:['Se connecter','Aanmelden'],
+  login_err:['Identifiant ou mot de passe incorrect.','Gebruikersnaam of wachtwoord onjuist.'],
+  app_title:['🌿 Pré-inscriptions — Week-end Artisanal','🌿 Voorinschrijvingen — Ambachtenweekend'],
+  logout:['Se déconnecter','Afmelden'],
+  smtp_warn:["⚠️ Le service e-mail (SMTP) n'est pas configuré : les décisions sont enregistrées mais aucun e-mail ne sera envoyé aux candidats.","⚠️ De e-maildienst (SMTP) is niet geconfigureerd: beslissingen worden opgeslagen maar er wordt geen e-mail naar de kandidaten verzonden."],
+  tab_pending:['📋 Pré-inscriptions','📋 Voorinschrijvingen'],
+  tab_valide:['✅ Validées','✅ Goedgekeurd'],
+  tab_refuse:['❌ Non validées','❌ Niet goedgekeurd'],
+  export_btn:['⬇️ Exporter en Excel','⬇️ Exporteren naar Excel'],
+  export_title:['⬇️ Exporter en Excel','⬇️ Exporteren naar Excel'],
+  export_intro:['Cochez les informations à inclure (1 ligne = 1 artisan) :','Vink de gegevens aan die u wilt opnemen (1 rij = 1 ambachtsman):'],
+  cancel:['Annuler','Annuleren'],
+  export_go:['Télécharger le fichier','Bestand downloaden'],
+  empty:['Aucune inscription dans cet onglet.','Geen inschrijving in dit tabblad.'],
+  sep_afaire:['🧾 Facture à envoyer','🧾 Factuur te versturen'],
+  sep_envoyee:['✅ Facture envoyée','✅ Factuur verzonden'],
+  b_envoyee:['Facture envoyée','Factuur verzonden'],
+  b_afaire:['Facture à envoyer','Factuur te versturen'],
+  b_payee:['Payée','Betaald'],
+  st_pending:['En attente','In afwachting'],
+  st_valide:['Validée','Goedgekeurd'],
+  st_refuse:['Non validée','Niet goedgekeurd'],
+  statut:['Statut :','Status:'],
+  recue_le:['Reçue le','Ontvangen op'],
+  decision:['Décision','Beslissing'],
+  valider:['✅ Valider la candidature','✅ Kandidatuur goedkeuren'],
+  refuser:['❌ Ne pas valider','❌ Niet goedkeuren'],
+  bascule_refuse:['Basculer en non validée','Naar niet-goedgekeurd zetten'],
+  bascule_valide:['Basculer en validée','Naar goedgekeurd zetten'],
+  facture:['🧾 Facture','🧾 Factuur'],
+  facture_envoyee_le:['Facture envoyée le','Factuur verzonden op'],
+  telecharger:['télécharger','downloaden'],
+  facture_deposee:['Facture déposée mais non encore envoyée.','Factuur geüpload maar nog niet verzonden.'],
+  fd_title:['Choisir un fichier (PDF)','Kies een bestand (PDF)'],
+  fd_sub:['Glissez-déposez ou cliquez','Sleep en plaats of klik'],
+  envoyer_facture:['Envoyer la facture par e-mail','Factuur per e-mail versturen'],
+  facture_payee:['Facture payée','Factuur betaald'],
+  m_decision_mail:['Décision enregistrée et e-mail envoyé.','Beslissing opgeslagen en e-mail verzonden.'],
+  m_decision_nomail:['Décision enregistrée (e-mail non envoyé : SMTP non configuré).','Beslissing opgeslagen (geen e-mail: SMTP niet geconfigureerd).'],
+  m_choose:['Veuillez choisir un fichier de facture.','Kies een factuurbestand.'],
+  m_facture_mail:['Facture envoyée par e-mail au candidat.','Factuur per e-mail naar de kandidaat verzonden.'],
+  m_facture_nomail:['Facture enregistrée (e-mail non envoyé : SMTP non configuré).','Factuur opgeslagen (geen e-mail: SMTP niet geconfigureerd).'],
+  m_facture_fail:["L'envoi de la facture a échoué.",'Het versturen van de factuur is mislukt.'],
+  m_export_min:['Sélectionnez au moins une colonne.','Selecteer minstens één kolom.'],
+  m_export_gen:['Génération du fichier…','Bestand genereren…'],
+  m_export_ok:['Fichier téléchargé.','Bestand gedownload.'],
+  err_prefix:['Erreur : ','Fout: ']
+};
+// Libellés des champs (détail) FR/NL
 const FIELD_LABELS = [
-  ['nom','Nom & prénom'],['entreprise','Entreprise'],['telephone','Téléphone'],['email','E-mail'],
-  ['instagram','Instagram'],['facebook','Facebook'],['adresse','Adresse'],['tva','N° TVA'],
-  ['autorisation_reseaux','Autorisation réseaux sociaux'],['nb_personnes','Personnes présentes'],
-  ['heure_arrivee','Arrivée samedi'],['longueur','Longueur stand (m)'],['largeur','Largeur stand (m)'],
-  ['mobilier','Mobilier apporté'],['mobilier_autre','Mobilier — autre'],['electricite','Électricité'],
-  ['type_appareils',"Type d'appareils"],['puissance_watts','Puissance (W)'],['produits','Produits exposés'],
-  ['produits_autre','Produits — autre'],['formule','Formule choisie'],['besoins','Besoins particuliers'],
-  ['date','Date'],['signature','Signature'],
+  ['nom',['Nom & prénom','Naam & voornaam']],['entreprise',['Entreprise','Bedrijf']],
+  ['telephone',['Téléphone','Telefoon']],['email',['E-mail','E-mail']],
+  ['instagram',['Instagram','Instagram']],['facebook',['Facebook','Facebook']],
+  ['adresse',['Adresse','Adres']],['tva',['N° TVA','Btw-nr']],
+  ['autorisation_reseaux',['Autorisation réseaux sociaux','Toestemming sociale media']],
+  ['nb_personnes',['Personnes présentes','Aanwezige personen']],
+  ['heure_arrivee',['Arrivée samedi','Aankomst zaterdag']],
+  ['longueur',['Longueur stand (m)','Lengte stand (m)']],['largeur',['Largeur stand (m)','Breedte stand (m)']],
+  ['mobilier',['Mobilier apporté','Meegebracht meubilair']],['mobilier_autre',['Mobilier — autre','Meubilair — andere']],
+  ['electricite',['Électricité','Elektriciteit']],['type_appareils',["Type d'appareils",'Type toestellen']],
+  ['puissance_watts',['Puissance (W)','Vermogen (W)']],['produits',['Produits exposés','Tentoongestelde producten']],
+  ['produits_autre',['Produits — autre','Producten — andere']],['formule',['Formule choisie','Gekozen formule']],
+  ['besoins',['Besoins particuliers','Bijzondere behoeften']],['date',['Date','Datum']],
+  ['signature',['Signature','Handtekening']]
 ];
-const STATUS_LABEL = { pending:'En attente', valide:'Validée', refuse:'Non validée' };
+// Libellés NL des colonnes d'export (clé serveur → NL)
+const COL_NL = {
+  contact:'Contact (naam + tel + e-mail)', stand:'Grootte stand (L × b)',
+  nom:'Naam & voornaam', entreprise:'Bedrijf', telephone:'Telefoon', email:'E-mail',
+  instagram:'Instagram', facebook:'Facebook', adresse:'Adres', tva:'Btw-nr',
+  autorisation_reseaux:'Toestemming sociale media', nb_personnes:'Aanwezige personen',
+  heure_arrivee:'Aankomst zaterdag', longueur:'Lengte stand (m)', largeur:'Breedte stand (m)',
+  mobilier:'Meegebracht meubilair', mobilier_autre:'Meubilair — andere', electricite:'Elektriciteit',
+  type_appareils:'Type toestellen', puissance_watts:'Vermogen (W)', produits:'Tentoongestelde producten',
+  produits_autre:'Producten — andere', formule:'Gekozen formule', besoins:'Bijzondere behoeften',
+  date:'Datum', signature:'Handtekening', createdAt:'Datum voorinschrijving', statut:'Status',
+  facture_envoyee:'Factuur verzonden', facture_payee:'Factuur betaald'
+};
 const DEFAULT_EXPORT = ['contact','entreprise','stand','heure_arrivee','formule','facture_envoyee','facture_payee'];
 
-let SUBS = [];
-let CURRENT_TAB = 'pending';
-let COLUMNS = null;
+let LANG = 'fr';
+try { LANG = localStorage.getItem('wa_lang') || 'fr'; } catch (e) {}
+LANG = (LANG === 'nl') ? 'nl' : 'fr';
+function T(key) { return STR[key] ? STR[key][LANG === 'nl' ? 1 : 0] : key; }
+function fieldLabel(k) { var f = FIELD_LABELS.find(x => x[0] === k); return f ? f[1][LANG === 'nl' ? 1 : 0] : k; }
 
-/* ---------- Helpers ---------- */
+let SUBS = [], CURRENT_TAB = 'pending', COLUMNS = null, OPEN_ID = null;
+
 const $ = s => document.querySelector(s);
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function fmtDate(iso){ try{ return new Date(iso).toLocaleString('fr-BE',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return iso||''; } }
+function fmtDate(iso){ try{ return new Date(iso).toLocaleString(LANG==='nl'?'nl-BE':'fr-BE',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return iso||''; } }
 
 async function api(path, opts={}){
   const res = await fetch(path, { credentials:'same-origin', ...opts });
   if (res.status === 401){ showLogin(); throw new Error('unauthorized'); }
   return res;
 }
+
+/* ---------- Bascule de langue ---------- */
+function applyLang(l){
+  LANG = (l === 'nl') ? 'nl' : 'fr';
+  try { localStorage.setItem('wa_lang', LANG); } catch (e) {}
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = T(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang') === LANG));
+  if ($('#app').style.display !== 'none'){ renderCounts(); renderTab(); if (OPEN_ID) openDetail(OPEN_ID); }
+}
+document.querySelectorAll('.lang-switch button').forEach(b => b.addEventListener('click', () => applyLang(b.getAttribute('data-lang'))));
 
 /* ---------- Connexion ---------- */
 function showLogin(){ $('#login').style.display='grid'; $('#app').style.display='none'; }
@@ -226,21 +325,18 @@ function showApp(){ $('#login').style.display='none'; $('#app').style.display='b
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   $('#loginErr').textContent = '';
-  const user = $('#user').value, pass = $('#pass').value;
   const res = await fetch('/api/admin/login', {
     method:'POST', credentials:'same-origin',
-    headers:{'Content-Type':'application/json'}, body:JSON.stringify({user,pass})
+    headers:{'Content-Type':'application/json'}, body:JSON.stringify({user:$('#user').value, pass:$('#pass').value})
   });
   if (res.ok){ $('#pass').value=''; await start(); }
-  else { $('#loginErr').textContent = 'Identifiant ou mot de passe incorrect.'; }
+  else { $('#loginErr').textContent = T('login_err'); }
 });
-
 $('#logoutBtn').addEventListener('click', async () => {
   await fetch('/api/admin/logout', {method:'POST', credentials:'same-origin'});
   showLogin();
 });
 
-/* ---------- Chargement ---------- */
 async function start(){
   const me = await (await fetch('/api/admin/me', {credentials:'same-origin'})).json();
   if (!me.authenticated){ showLogin(); return; }
@@ -248,14 +344,11 @@ async function start(){
   $('#smtpWarn').style.display = me.smtp ? 'none' : 'block';
   await loadSubs();
 }
-
 async function loadSubs(){
   const data = await (await api('/api/admin/submissions')).json();
   SUBS = data.submissions || [];
-  renderCounts();
-  renderTab();
+  renderCounts(); renderTab();
 }
-
 function renderCounts(){
   const by = s => SUBS.filter(r=>r.status===s).length;
   $('#c-pending').textContent = by('pending');
@@ -263,7 +356,6 @@ function renderCounts(){
   $('#c-refuse').textContent = by('refuse');
 }
 
-/* ---------- Onglets ---------- */
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
   CURRENT_TAB = t.dataset.status;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x===t));
@@ -273,86 +365,87 @@ document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () =>
 function cardHtml(r){
   const f = r.fields || {};
   const factureBadge = r.status==='valide'
-    ? (r.facture && r.facture.envoyeeAt ? '<span class="badge ok">Facture envoyée</span>' : '<span class="badge wait">Facture à envoyer</span>')
+    ? (r.facture && r.facture.envoyeeAt ? `<span class="badge ok">${T('b_envoyee')}</span>` : `<span class="badge wait">${T('b_afaire')}</span>`)
     : '';
-  const paidBadge = (r.status==='valide' && r.facturePayee) ? '<span class="badge paid">Payée</span>' : '';
+  const paidBadge = (r.status==='valide' && r.facturePayee) ? `<span class="badge paid">${T('b_payee')}</span>` : '';
   return `<div class="card ${r.status}" data-id="${r.id}">
     <div class="main">
-      <strong>${esc(f.entreprise || f.nom || 'Sans nom')}</strong>
+      <strong>${esc(f.entreprise || f.nom || '—')}</strong>
       <span class="sub">${esc(f.nom||'')} · ${esc(f.email||'')} · ${esc(f.telephone||'')}${factureBadge}${paidBadge}</span>
     </div>
     <div class="meta">${esc(f.formule||'')}<br>${fmtDate(r.createdAt)}</div>
   </div>`;
 }
-
 function renderTab(){
   const list = $('#list');
   const rows = SUBS.filter(r => r.status === CURRENT_TAB);
   $('#toolbar').style.display = (CURRENT_TAB==='valide') ? 'flex' : 'none';
-
-  if (!rows.length){ list.innerHTML = `<div class="empty">Aucune inscription dans cet onglet.</div>`; bindCards(); return; }
-
+  if (!rows.length){ list.innerHTML = `<div class="empty">${T('empty')}</div>`; return; }
   if (CURRENT_TAB === 'valide'){
     const sans = rows.filter(r => !(r.facture && r.facture.envoyeeAt));
     const avec = rows.filter(r => r.facture && r.facture.envoyeeAt);
     let html = '';
-    if (sans.length) html += `<div class="section-sep">🧾 Facture à envoyer (${sans.length})</div>` + sans.map(cardHtml).join('');
-    if (avec.length) html += `<div class="section-sep">✅ Facture envoyée (${avec.length})</div>` + avec.map(cardHtml).join('');
+    if (sans.length) html += `<div class="section-sep">${T('sep_afaire')} (${sans.length})</div>` + sans.map(cardHtml).join('');
+    if (avec.length) html += `<div class="section-sep">${T('sep_envoyee')} (${avec.length})</div>` + avec.map(cardHtml).join('');
     list.innerHTML = html;
   } else {
     list.innerHTML = rows.map(cardHtml).join('');
   }
-  bindCards();
-}
-
-function bindCards(){
   document.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
 }
 
-/* ---------- Détail ---------- */
 function openDetail(id){
   const r = SUBS.find(x=>x.id===id);
   if (!r) return;
+  OPEN_ID = id;
   const f = r.fields || {};
-  $('#detailTitle').textContent = f.entreprise || f.nom || 'Détail';
+  $('#detailTitle').textContent = f.entreprise || f.nom || '—';
 
   let recap = '<dl class="recap">';
-  FIELD_LABELS.forEach(([k,lab])=>{ if (f[k]!=null && String(f[k]).trim()!=='') recap += `<dt>${lab}</dt><dd>${esc(f[k])}</dd>`; });
-  recap += `<dt>Reçue le</dt><dd>${fmtDate(r.createdAt)}</dd></dl>`;
+  FIELD_LABELS.forEach(([k])=>{ if (f[k]!=null && String(f[k]).trim()!=='') recap += `<dt>${fieldLabel(k)}</dt><dd>${esc(f[k])}</dd>`; });
+  recap += `<dt>${T('recue_le')}</dt><dd>${fmtDate(r.createdAt)}</dd></dl>`;
 
   const photos = (r.photos||[]).map(n =>
     `<a href="/api/admin/submissions/${r.id}/photo/${encodeURIComponent(n)}" target="_blank">
        <img src="/api/admin/submissions/${r.id}/photo/${encodeURIComponent(n)}" alt="photo"></a>`).join('');
 
   const factureLine = (r.facture && r.facture.envoyeeAt)
-    ? `<p class="msg ok">Facture envoyée le ${fmtDate(r.facture.envoyeeAt)} · <a href="/api/admin/submissions/${r.id}/facture" target="_blank">télécharger</a></p>`
-    : (r.facture ? `<p class="msg">Facture déposée mais non encore envoyée.</p>` : '');
+    ? `<p class="msg ok">${T('facture_envoyee_le')} ${fmtDate(r.facture.envoyeeAt)} · <a href="/api/admin/submissions/${r.id}/facture" target="_blank">${T('telecharger')}</a></p>`
+    : (r.facture ? `<p class="msg">${T('facture_deposee')}</p>` : '');
 
   const decision = r.status==='pending' ? `
     <div class="action-row">
-      <button class="btn" data-act="validate" data-id="${r.id}">✅ Valider la candidature</button>
-      <button class="btn btn-danger" data-act="reject" data-id="${r.id}">❌ Ne pas valider</button>
+      <button class="btn" data-act="validate" data-id="${r.id}">${T('valider')}</button>
+      <button class="btn btn-danger" data-act="reject" data-id="${r.id}">${T('refuser')}</button>
     </div>` : `
     <div class="action-row">
-      ${r.status==='valide' ? '<button class="btn btn-danger btn-sm" data-act="reject" data-id="'+r.id+'">Basculer en non validée</button>' : '<button class="btn btn-sm" data-act="validate" data-id="'+r.id+'">Basculer en validée</button>'}
+      ${r.status==='valide' ? `<button class="btn btn-danger btn-sm" data-act="reject" data-id="${r.id}">${T('bascule_refuse')}</button>` : `<button class="btn btn-sm" data-act="validate" data-id="${r.id}">${T('bascule_valide')}</button>`}
     </div>`;
 
   $('#detailBody').innerHTML = `
-    <p class="status-line ${r.status}">Statut : ${STATUS_LABEL[r.status]}</p>
+    <p class="status-line ${r.status}">${T('statut')} ${T('st_'+r.status)}</p>
     ${photos ? `<div class="photos">${photos}</div>` : ''}
     ${recap}
     <div class="action-box">
-      <h3>Décision</h3>
+      <h3>${T('decision')}</h3>
       ${decision}
     </div>
     <div class="action-box">
-      <h3>🧾 Facture</h3>
+      <h3>${T('facture')}</h3>
       ${factureLine}
-      <div class="action-row">
-        <input type="file" class="file-input" id="factureFile" accept="application/pdf,image/*">
-        <button class="btn btn-sm" data-act="facture" data-id="${r.id}">Envoyer la facture par e-mail</button>
+      <div class="facture-drop" id="factureDrop">
+        <div class="fd-empty">
+          <div class="fd-icon">📄</div>
+          <div class="fd-title">${T('fd_title')}</div>
+          <div class="fd-sub">${T('fd_sub')}</div>
+        </div>
+        <div class="fd-file" id="factureName"></div>
+        <input type="file" id="factureFile" accept="application/pdf,image/*">
       </div>
-      <label class="check-inline"><input type="checkbox" id="paidChk" ${r.facturePayee?'checked':''} data-id="${r.id}"> Facture payée</label>
+      <div class="action-row">
+        <button class="btn btn-sm" data-act="facture" data-id="${r.id}">${T('envoyer_facture')}</button>
+      </div>
+      <label class="check-inline"><input type="checkbox" id="paidChk" ${r.facturePayee?'checked':''} data-id="${r.id}"> ${T('facture_payee')}</label>
       <div class="msg" id="detailMsg"></div>
     </div>`;
 
@@ -369,70 +462,77 @@ function bindDetailActions(){
     });
     await loadSubs();
   });
+  // Zone de dépôt de la facture
+  const drop = $('#factureDrop'), input = $('#factureFile'), nameEl = $('#factureName');
+  if (drop){
+    const show = () => { if (input.files[0]){ drop.classList.add('filled'); nameEl.textContent = '📎 ' + input.files[0].name; } };
+    input.addEventListener('change', show);
+    ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag');}));
+    ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag');}));
+    drop.addEventListener('drop', e=>{ if(e.dataTransfer.files[0]){ input.files = e.dataTransfer.files; show(); } });
+  }
 }
 
 async function doAction(btn){
-  const id = btn.dataset.id, act = btn.dataset.act;
-  const msg = $('#detailMsg');
+  const id = btn.dataset.id, act = btn.dataset.act, msg = $('#detailMsg');
   btn.classList.add('spin');
+  window.feeShow && window.feeShow();
   try{
     if (act==='validate' || act==='reject'){
       const res = await api(`/api/admin/submissions/${id}/${act}`, {method:'POST'});
       const j = await res.json();
-      if (msg) msg.className='msg ok', msg.textContent = j.mailed ? 'Décision enregistrée et e-mail envoyé.' : 'Décision enregistrée (e-mail non envoyé : SMTP non configuré).';
+      window.feeHide && window.feeHide();
+      if (msg){ msg.className='msg ok'; msg.textContent = j.mailed ? T('m_decision_mail') : T('m_decision_nomail'); }
       await loadSubs();
-      $('#detailOverlay').classList.remove('open');
+      $('#detailOverlay').classList.remove('open'); OPEN_ID=null;
     } else if (act==='facture'){
       const file = $('#factureFile').files[0];
-      if (!file){ msg.className='msg err'; msg.textContent='Veuillez choisir un fichier de facture.'; btn.classList.remove('spin'); return; }
+      if (!file){ window.feeHide&&window.feeHide(); msg.className='msg err'; msg.textContent=T('m_choose'); btn.classList.remove('spin'); return; }
       const fd = new FormData(); fd.append('facture', file, file.name);
       const res = await api(`/api/admin/submissions/${id}/facture`, {method:'POST', body:fd});
       const j = await res.json();
-      if (!res.ok){ msg.className='msg err'; msg.textContent="L'envoi de la facture a échoué."; }
-      else { msg.className='msg ok'; msg.textContent = j.mailed ? 'Facture envoyée par e-mail au candidat.' : 'Facture enregistrée (e-mail non envoyé : SMTP non configuré).'; }
-      await loadSubs();
-      openDetail(id);
+      window.feeHide && window.feeHide();
+      if (!res.ok){ msg.className='msg err'; msg.textContent=T('m_facture_fail'); }
+      else { msg.className='msg ok'; msg.textContent = j.mailed ? T('m_facture_mail') : T('m_facture_nomail'); }
+      await loadSubs(); openDetail(id);
     }
-  }catch(e){ if (msg){ msg.className='msg err'; msg.textContent='Erreur : '+e.message; } }
+  }catch(e){ window.feeHide&&window.feeHide(); if (msg){ msg.className='msg err'; msg.textContent=T('err_prefix')+e.message; } }
   btn.classList.remove('spin');
 }
 
-document.querySelectorAll('[data-close-detail]').forEach(b=>b.addEventListener('click',()=>$('#detailOverlay').classList.remove('open')));
-$('#detailOverlay').addEventListener('click', e=>{ if(e.target===$('#detailOverlay')) $('#detailOverlay').classList.remove('open'); });
+document.querySelectorAll('[data-close-detail]').forEach(b=>b.addEventListener('click',()=>{$('#detailOverlay').classList.remove('open');OPEN_ID=null;}));
+$('#detailOverlay').addEventListener('click', e=>{ if(e.target===$('#detailOverlay')){$('#detailOverlay').classList.remove('open');OPEN_ID=null;} });
 
 /* ---------- Export ---------- */
 $('#exportBtn').addEventListener('click', openExport);
 async function openExport(){
-  if (!COLUMNS){
-    const j = await (await api('/api/admin/columns')).json();
-    COLUMNS = j.columns || [];
-  }
-  $('#exportCols').innerHTML = COLUMNS.map(c =>
-    `<label><input type="checkbox" value="${c.key}" ${DEFAULT_EXPORT.includes(c.key)?'checked':''}> ${esc(c.label)}</label>`).join('');
+  if (!COLUMNS){ const j = await (await api('/api/admin/columns')).json(); COLUMNS = j.columns || []; }
+  $('#exportCols').innerHTML = COLUMNS.map(c => {
+    const label = (LANG==='nl' && COL_NL[c.key]) ? COL_NL[c.key] : c.label;
+    return `<label><input type="checkbox" value="${c.key}" ${DEFAULT_EXPORT.includes(c.key)?'checked':''}> ${esc(label)}</label>`;
+  }).join('');
   $('#exportMsg').textContent='';
   $('#exportOverlay').classList.add('open');
 }
 document.querySelectorAll('[data-close-export]').forEach(b=>b.addEventListener('click',()=>$('#exportOverlay').classList.remove('open')));
-
 $('#exportGo').addEventListener('click', async () => {
   const cols = [...document.querySelectorAll('#exportCols input:checked')].map(i=>i.value);
-  if (!cols.length){ $('#exportMsg').className='msg err'; $('#exportMsg').textContent='Sélectionnez au moins une colonne.'; return; }
-  $('#exportMsg').className='msg'; $('#exportMsg').textContent='Génération du fichier…';
-  const res = await api('/api/admin/export', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({columns:cols, status:'valide'})
-  });
+  if (!cols.length){ $('#exportMsg').className='msg err'; $('#exportMsg').textContent=T('m_export_min'); return; }
+  $('#exportMsg').className='msg'; $('#exportMsg').textContent=T('m_export_gen');
+  window.feeShow && window.feeShow();
+  const res = await api('/api/admin/export', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({columns:cols, status:'valide'}) });
   const blob = await res.blob();
+  window.feeHide && window.feeHide();
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'inscriptions-weekend-artisanal.xlsx';
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-  $('#exportMsg').className='msg ok'; $('#exportMsg').textContent='Fichier téléchargé.';
+  const a = document.createElement('a'); a.href = url; a.download = 'inscriptions-weekend-artisanal.xlsx';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  $('#exportMsg').className='msg ok'; $('#exportMsg').textContent=T('m_export_ok');
 });
 
 /* ---------- Démarrage ---------- */
+applyLang(LANG);
 start();
 </script>
+<script src="fee.js" defer></script>
 </body>
 </html>

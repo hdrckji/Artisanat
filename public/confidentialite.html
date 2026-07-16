@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
 <title>Confidentialité &amp; RGPD — Week-end Artisanal Famiflora</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="256x256" href="favicon-artisanal.png">
 <link rel="apple-touch-icon" href="favicon-artisanal.png">
-<meta name="description" content="Comment Famiflora collecte et utilise vos données lors de la pré-inscription au Week-end Artisanal — information RGPD.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,24 +22,23 @@
 html{scroll-behavior:smooth}
 body{font-family:'Karla',sans-serif;color:var(--encre);background:var(--creme);line-height:1.6}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:
-    radial-gradient(ellipse at 15% 10%, rgba(185,113,63,.06), transparent 45%),
-    radial-gradient(ellipse at 85% 90%, rgba(118,184,42,.05), transparent 45%),
-    var(--creme);}
+  background:radial-gradient(ellipse at 15% 10%, rgba(185,113,63,.06), transparent 45%),
+    radial-gradient(ellipse at 85% 90%, rgba(118,184,42,.05), transparent 45%),var(--creme);}
 h1,h2,h3{font-family:'Fraunces',serif;color:var(--brun-fonce);line-height:1.25}
 a{color:var(--vert-fonce)}
-header.hero{
-  text-align:center;padding:2.6rem 1.25rem 2.8rem;color:var(--creme);
-  background:linear-gradient(180deg,#7a5a3a 0%, #6b4d31 55%, #5f4630 100%);
-  border-bottom:6px solid var(--vert);
-}
+header.hero{position:relative;text-align:center;padding:2.6rem 1.25rem 2.8rem;color:var(--creme);
+  background:linear-gradient(180deg,#7a5a3a 0%, #6b4d31 55%, #5f4630 100%);border-bottom:6px solid var(--vert)}
 header.hero h1{color:var(--creme);font-size:2rem;margin-bottom:.5rem}
 header.hero p{color:#f0e6d6;max-width:640px;margin:0 auto}
+.lang-switch{position:absolute;top:1rem;left:1rem;z-index:5;display:flex;gap:.25rem;
+  background:rgba(0,0,0,.28);border:1px solid rgba(250,244,232,.35);border-radius:999px;padding:.2rem}
+.lang-switch button{border:none;background:transparent;color:#f0e6d6;font-family:'Karla',sans-serif;
+  font-weight:700;font-size:.82rem;padding:.32rem .7rem;border-radius:999px;cursor:pointer}
+.lang-switch button.active{background:var(--vert);color:#fff}
 .wrap{max-width:820px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
 .card{background:var(--blanc);border-radius:var(--radius);box-shadow:var(--ombre);
   padding:2rem 2.2rem;margin-bottom:1.6rem;border-top:6px solid var(--vert)}
 .card h2{font-size:1.4rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.6rem}
-.card h3{font-size:1.05rem;margin:1.2rem 0 .4rem}
 .card p{margin-bottom:.9rem}
 .card ul{margin:.4rem 0 .9rem 1.3rem}
 .card li{margin:.35rem 0}
@@ -52,96 +51,189 @@ header.hero p{color:#f0e6d6;max-width:640px;margin:0 auto}
 .updated{text-align:center;color:var(--gris-doux);font-size:.85rem;margin-top:1rem}
 footer{background:var(--brun-fonce);color:var(--creme);text-align:center;padding:1.8rem 1.25rem;border-top:6px solid var(--vert);font-size:.9rem}
 footer a{color:#c9e79d}
+/* Bascule de langue : on masque la langue inactive */
+.lang-nl{display:none}
+html.nl .lang-fr{display:none}
+html.nl .lang-nl{display:block}
 </style>
 </head>
 <body>
 <header class="hero">
-  <h1>🔒 Confidentialité &amp; protection des données</h1>
-  <p>Week-end Artisanal — Famiflora Mouscron</p>
+  <div class="lang-switch" role="group" aria-label="Langue / Taal">
+    <button type="button" data-lang="fr" class="active">FR</button>
+    <button type="button" data-lang="nl">NL</button>
+  </div>
+  <h1 class="lang-fr">🔒 Confidentialité &amp; protection des données</h1>
+  <h1 class="lang-nl">🔒 Privacy &amp; gegevensbescherming</h1>
+  <p class="lang-fr">Week-end Artisanal — Famiflora Mouscron</p>
+  <p class="lang-nl">Ambachtenweekend — Famiflora Moeskroen</p>
 </header>
 
 <div class="wrap">
-  <a class="back" href="index.html">← Retour à la pré-inscription</a>
 
-  <div class="card">
-    <div class="highlight">
+  <!-- ==================== FRANÇAIS ==================== -->
+  <div class="lang-fr">
+    <a class="back" href="index.html">← Retour à la pré-inscription</a>
+    <div class="card"><div class="highlight">
       <p style="margin-bottom:0"><strong>En résumé :</strong> les informations que vous nous transmettez lors de la
       pré-inscription sont collectées <strong>dans l'unique but d'organiser le Week-end Artisanal dans de bonnes
       conditions</strong>. Nous en avons besoin pour étudier votre candidature, préparer l'agencement des stands et vous
       tenir informé. Vos données sont utilisées <strong>uniquement dans ce cadre</strong> et ne sont ni vendues, ni
       cédées, ni utilisées à des fins commerciales.</p>
+    </div></div>
+    <div class="card">
+      <h2>🏷️ Qui est responsable de vos données&nbsp;?</h2>
+      <p>Le responsable du traitement est <strong>Famiflora</strong>, organisateur du Week-end Artisanal.</p>
+      <div class="contact-box">
+        <p style="margin-bottom:.3rem"><strong>Famiflora</strong><br>Rue Jules Vantieghem 14 — 7711 Mouscron (Belgique)</p>
+        <p style="margin-bottom:0">Personne de contact : <strong>Cyril Loiseau</strong><br>
+        📞 <a href="tel:+3256336600">056 33 66 00</a> · ✉️ <a href="mailto:cyril.loiseau@famiflora.be">cyril.loiseau@famiflora.be</a></p>
+      </div>
     </div>
-  </div>
-
-  <div class="card">
-    <h2>🏷️ Qui est responsable de vos données&nbsp;?</h2>
-    <p>Le responsable du traitement est <strong>Famiflora</strong>, organisateur du Week-end Artisanal.</p>
-    <div class="contact-box">
-      <p style="margin-bottom:.3rem"><strong>Famiflora</strong><br>
-      Rue Jules Vantieghem 14 — 7711 Mouscron (Belgique)</p>
-      <p style="margin-bottom:0">Personne de contact : <strong>Cyril Loiseau</strong><br>
-      📞 <a href="tel:+3256336600">056 33 66 00</a> · ✉️ <a href="mailto:cyril.loiseau@famiflora.be">cyril.loiseau@famiflora.be</a></p>
+    <div class="card">
+      <h2>📋 Quelles données collectons-nous&nbsp;?</h2>
+      <p>Uniquement les informations que vous saisissez volontairement dans le formulaire de pré-inscription :</p>
+      <ul>
+        <li><strong>Identité &amp; contact</strong> : nom et prénom de l'artisan, nom de l'entreprise, adresse, numéro de TVA, téléphone, e-mail ;</li>
+        <li><strong>Réseaux sociaux</strong> : liens Instagram / Facebook (si vous les indiquez) et votre autorisation d'en citer le nom dans nos publications ;</li>
+        <li><strong>Organisation du stand</strong> : nombre de personnes présentes, heure d'arrivée, dimensions du stand, mobilier, besoins en électricité, type de produits exposés, formule choisie, besoins particuliers ;</li>
+        <li><strong>Photos</strong> : les 3 photos de vos créations / de votre stand que vous joignez à votre demande ;</li>
+        <li><strong>Engagement</strong> : date et signature électronique (votre nom) attestant votre accord.</li>
+      </ul>
     </div>
+    <div class="card">
+      <h2>🎯 Pourquoi&nbsp;? (finalités)</h2>
+      <p>Ces informations sont nécessaires pour&nbsp;:</p>
+      <ul>
+        <li>étudier votre candidature et sélectionner les exposants ;</li>
+        <li>organiser concrètement l'événement (placement et agencement des stands, électricité, logistique) ;</li>
+        <li>vous contacter au sujet de votre inscription et vous envoyer la confirmation puis la facture ;</li>
+        <li>avec votre accord uniquement, promouvoir l'événement (mention du nom de votre compte, photos).</li>
+      </ul>
+      <p>La base légale du traitement est votre <strong>consentement</strong> (case cochée lors de la pré-inscription) et
+      l'exécution des <strong>démarches précontractuelles</strong> liées à votre participation.</p>
+    </div>
+    <div class="card">
+      <h2>🗄️ Combien de temps&nbsp;?</h2>
+      <p>Vos données sont conservées le temps nécessaire à l'organisation de l'édition concernée, puis pour la durée
+      requise par nos obligations légales (notamment comptables). Elles sont ensuite supprimées ou archivées de manière
+      sécurisée.</p>
+    </div>
+    <div class="card">
+      <h2>🔐 Avec qui sont-elles partagées&nbsp;?</h2>
+      <p>Vos données restent internes à l'équipe d'organisation de Famiflora. Elles ne sont <strong>ni vendues ni cédées à
+      des tiers</strong> à des fins commerciales. Elles peuvent uniquement transiter par nos prestataires techniques
+      (hébergement, service d'envoi d'e-mails) dans la stricte mesure nécessaire au fonctionnement du formulaire.</p>
+    </div>
+    <div class="card">
+      <h2>⚖️ Vos droits (RGPD)</h2>
+      <p>Conformément au Règlement général sur la protection des données, vous disposez à tout moment d'un droit
+      d'accès, de rectification, d'effacement, de limitation et d'opposition, ainsi que du droit de retirer votre consentement.</p>
+      <p>Pour exercer ces droits, écrivez-nous à <a href="mailto:cyril.loiseau@famiflora.be">cyril.loiseau@famiflora.be</a>.
+      Vous pouvez également introduire une réclamation auprès de l'Autorité de protection des données (Belgique) —
+      <a href="https://www.autoriteprotectiondonnees.be" target="_blank" rel="noopener">autoriteprotectiondonnees.be</a>.</p>
+    </div>
+    <a class="back" href="index.html">← Retour à la pré-inscription</a>
+    <p class="updated">Cette page pourra être mise à jour. Dernière version : édition en cours.</p>
   </div>
 
-  <div class="card">
-    <h2>📋 Quelles données collectons-nous&nbsp;?</h2>
-    <p>Uniquement les informations que vous saisissez volontairement dans le formulaire de pré-inscription :</p>
-    <ul>
-      <li><strong>Identité &amp; contact</strong> : nom et prénom de l'artisan, nom de l'entreprise, adresse, numéro de TVA, téléphone, e-mail ;</li>
-      <li><strong>Réseaux sociaux</strong> : liens Instagram / Facebook (si vous les indiquez) et votre autorisation d'en citer le nom dans nos publications ;</li>
-      <li><strong>Organisation du stand</strong> : nombre de personnes présentes, heure d'arrivée, dimensions du stand, mobilier, besoins en électricité, type de produits exposés, formule choisie, besoins particuliers ;</li>
-      <li><strong>Photos</strong> : les 3 photos de vos créations / de votre stand que vous joignez à votre demande ;</li>
-      <li><strong>Engagement</strong> : date et signature électronique (votre nom) attestant votre accord.</li>
-    </ul>
+  <!-- ==================== NEDERLANDS ==================== -->
+  <div class="lang-nl">
+    <a class="back" href="index.html">← Terug naar de voorinschrijving</a>
+    <div class="card"><div class="highlight">
+      <p style="margin-bottom:0"><strong>Samengevat:</strong> de gegevens die u ons bij de voorinschrijving bezorgt,
+      worden verzameld <strong>met als enige doel het Ambachtenweekend in goede omstandigheden te organiseren</strong>.
+      Wij hebben ze nodig om uw kandidatuur te beoordelen, de indeling van de stands voor te bereiden en u op de hoogte
+      te houden. Uw gegevens worden <strong>uitsluitend in dit kader</strong> gebruikt en worden niet verkocht, niet
+      doorgegeven en niet voor commerciële doeleinden gebruikt.</p>
+    </div></div>
+    <div class="card">
+      <h2>🏷️ Wie is verantwoordelijk voor uw gegevens?</h2>
+      <p>De verwerkingsverantwoordelijke is <strong>Famiflora</strong>, organisator van het Ambachtenweekend.</p>
+      <div class="contact-box">
+        <p style="margin-bottom:.3rem"><strong>Famiflora</strong><br>Rue Jules Vantieghem 14 — 7711 Moeskroen (België)</p>
+        <p style="margin-bottom:0">Contactpersoon: <strong>Cyril Loiseau</strong><br>
+        📞 <a href="tel:+3256336600">056 33 66 00</a> · ✉️ <a href="mailto:cyril.loiseau@famiflora.be">cyril.loiseau@famiflora.be</a></p>
+      </div>
+    </div>
+    <div class="card">
+      <h2>📋 Welke gegevens verzamelen wij?</h2>
+      <p>Enkel de gegevens die u vrijwillig invult in het voorinschrijvingsformulier:</p>
+      <ul>
+        <li><strong>Identiteit &amp; contact</strong>: naam en voornaam van de ambachtsman, naam van het bedrijf, adres, btw-nummer, telefoon, e-mail;</li>
+        <li><strong>Sociale media</strong>: Instagram-/Facebook-links (indien opgegeven) en uw toestemming om de naam ervan in onze publicaties te vermelden;</li>
+        <li><strong>Organisatie van de stand</strong>: aantal aanwezige personen, aankomstuur, afmetingen van de stand, meubilair, elektriciteitsbehoeften, type tentoongestelde producten, gekozen formule, bijzondere behoeften;</li>
+        <li><strong>Foto's</strong>: de 3 foto's van uw creaties / uw stand die u bij uw aanvraag voegt;</li>
+        <li><strong>Verbintenis</strong>: datum en elektronische handtekening (uw naam) die uw akkoord bevestigen.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>🎯 Waarom? (doeleinden)</h2>
+      <p>Deze gegevens zijn nodig om:</p>
+      <ul>
+        <li>uw kandidatuur te beoordelen en de exposanten te selecteren;</li>
+        <li>het evenement concreet te organiseren (plaatsing en indeling van de stands, elektriciteit, logistiek);</li>
+        <li>u te contacteren over uw inschrijving en u de bevestiging en vervolgens de factuur te bezorgen;</li>
+        <li>enkel met uw akkoord, het evenement te promoten (vermelding van uw accountnaam, foto's).</li>
+      </ul>
+      <p>De rechtsgrond voor de verwerking is uw <strong>toestemming</strong> (aangevinkt vakje bij de voorinschrijving) en
+      de uitvoering van de <strong>precontractuele stappen</strong> in verband met uw deelname.</p>
+    </div>
+    <div class="card">
+      <h2>🗄️ Hoelang?</h2>
+      <p>Uw gegevens worden bewaard zolang dat nodig is voor de organisatie van de betrokken editie, en daarna voor de
+      duur die onze wettelijke verplichtingen (met name boekhoudkundige) vereisen. Nadien worden ze verwijderd of op een
+      beveiligde manier gearchiveerd.</p>
+    </div>
+    <div class="card">
+      <h2>🔐 Met wie worden ze gedeeld?</h2>
+      <p>Uw gegevens blijven binnen het organisatieteam van Famiflora. Ze worden <strong>niet verkocht of aan derden
+      doorgegeven</strong> voor commerciële doeleinden. Ze kunnen enkel via onze technische dienstverleners (hosting,
+      e-maildienst) passeren, strikt voor zover nodig voor de werking van het formulier.</p>
+    </div>
+    <div class="card">
+      <h2>⚖️ Uw rechten (AVG)</h2>
+      <p>Overeenkomstig de Algemene Verordening Gegevensbescherming beschikt u op elk moment over een recht op inzage,
+      verbetering, wissing, beperking en bezwaar, evenals het recht om uw toestemming in te trekken.</p>
+      <p>Om deze rechten uit te oefenen, schrijf ons op <a href="mailto:cyril.loiseau@famiflora.be">cyril.loiseau@famiflora.be</a>.
+      U kunt ook een klacht indienen bij de Gegevensbeschermingsautoriteit (België) —
+      <a href="https://www.gegevensbeschermingsautoriteit.be" target="_blank" rel="noopener">gegevensbeschermingsautoriteit.be</a>.</p>
+    </div>
+    <a class="back" href="index.html">← Terug naar de voorinschrijving</a>
+    <p class="updated">Deze pagina kan worden bijgewerkt. Laatste versie: huidige editie.</p>
   </div>
 
-  <div class="card">
-    <h2>🎯 Pourquoi&nbsp;? (finalités)</h2>
-    <p>Ces informations sont nécessaires pour&nbsp;:</p>
-    <ul>
-      <li>étudier votre candidature et sélectionner les exposants ;</li>
-      <li>organiser concrètement l'événement (placement et agencement des stands, électricité, logistique) ;</li>
-      <li>vous contacter au sujet de votre inscription et vous envoyer la confirmation puis la facture ;</li>
-      <li>avec votre accord uniquement, promouvoir l'événement (mention du nom de votre compte, photos).</li>
-    </ul>
-    <p>La base légale du traitement est votre <strong>consentement</strong> (case cochée lors de la pré-inscription) et
-    l'exécution des <strong>démarches précontractuelles</strong> liées à votre participation.</p>
-  </div>
-
-  <div class="card">
-    <h2>🗄️ Combien de temps&nbsp;?</h2>
-    <p>Vos données sont conservées le temps nécessaire à l'organisation de l'édition concernée, puis pour la durée
-    requise par nos obligations légales (notamment comptables). Elles sont ensuite supprimées ou archivées de manière
-    sécurisée.</p>
-  </div>
-
-  <div class="card">
-    <h2>🔐 Avec qui sont-elles partagées&nbsp;?</h2>
-    <p>Vos données restent internes à l'équipe d'organisation de Famiflora. Elles ne sont <strong>ni vendues ni cédées à
-    des tiers</strong> à des fins commerciales. Elles peuvent uniquement transiter par nos prestataires techniques
-    (hébergement, service d'envoi d'e-mails) dans la stricte mesure nécessaire au fonctionnement du formulaire.</p>
-  </div>
-
-  <div class="card">
-    <h2>⚖️ Vos droits (RGPD)</h2>
-    <p>Conformément au Règlement général sur la protection des données, vous disposez à tout moment d'un droit
-    d'accès, de rectification, d'effacement, de limitation et d'opposition, ainsi que du droit de retirer votre
-    consentement.</p>
-    <p>Pour exercer ces droits, écrivez-nous à
-    <a href="mailto:cyril.loiseau@famiflora.be">cyril.loiseau@famiflora.be</a>. Vous pouvez également introduire une
-    réclamation auprès de l'Autorité de protection des données (Belgique) —
-    <a href="https://www.autoriteprotectiondonnees.be" target="_blank" rel="noopener">autoriteprotectiondonnees.be</a>.</p>
-  </div>
-
-  <a class="back" href="index.html">← Retour à la pré-inscription</a>
-  <p class="updated">Cette page pourra être mise à jour. Dernière version : édition en cours.</p>
 </div>
 
 <footer>
-  <p>© Famiflora – Week-end Artisanal ·
+  <p class="lang-fr">© Famiflora – Week-end Artisanal ·
     <a href="reglement-week-end.pdf" target="_blank" rel="noopener">Règlement du week-end</a> ·
     <a href="index.html">Pré-inscription</a></p>
+  <p class="lang-nl">© Famiflora – Ambachtenweekend ·
+    <a href="Reglement_van_het_weekend.pdf" target="_blank" rel="noopener">Reglement van het weekend</a> ·
+    <a href="index.html">Voorinschrijving</a></p>
 </footer>
+
+<script>
+(function () {
+  var l = 'fr';
+  try { l = localStorage.getItem('wa_lang') || 'fr'; } catch (e) {}
+  function set(x) {
+    x = (x === 'nl') ? 'nl' : 'fr';
+    document.documentElement.classList.toggle('nl', x === 'nl');
+    document.documentElement.lang = x;
+    try { localStorage.setItem('wa_lang', x); } catch (e) {}
+    document.querySelectorAll('.lang-switch button').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-lang') === x);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.lang-switch button').forEach(function (b) {
+      b.addEventListener('click', function () { set(b.getAttribute('data-lang')); });
+    });
+    set(l);
+  });
+})();
+</script>
 </body>
 </html>
