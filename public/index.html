@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="i18n.js"></script>
 <style>
 :root{
   --brun:#5f4630;
@@ -81,6 +82,12 @@ header.hero::before{
   background:linear-gradient(180deg, rgba(46,32,19,.74), rgba(46,32,19,.58) 45%, rgba(46,32,19,.84));
 }
 .hero-inner{position:relative;z-index:2;max-width:820px;margin:0 auto}
+/* Sélecteur de langue */
+.lang-switch{position:absolute;top:1rem;left:1rem;z-index:110;display:flex;gap:.25rem;
+  background:rgba(0,0,0,.28);border:1px solid rgba(250,244,232,.35);border-radius:999px;padding:.2rem}
+.lang-switch button{border:none;background:transparent;color:#f0e6d6;font-family:'Karla',sans-serif;
+  font-weight:700;font-size:.82rem;letter-spacing:.03em;padding:.32rem .7rem;border-radius:999px;cursor:pointer}
+.lang-switch button.active{background:var(--vert);color:#fff}
 .hero .ff-logo{
   width:150px;margin:0 auto 1.4rem;
   background:var(--creme);border-radius:12px;padding:.65rem .9rem;
@@ -354,6 +361,10 @@ footer a:hover{text-decoration:underline}
 
 <!-- ==================== EN-TÊTE ==================== -->
 <header class="hero">
+  <div class="lang-switch" role="group" aria-label="Langue / Taal">
+    <button type="button" data-lang="fr" class="active">FR</button>
+    <button type="button" data-lang="nl">NL</button>
+  </div>
   <div class="hero-photos" aria-hidden="true">
     <img src="galerie/photo-02.jpg" alt="" loading="eager">
     <img src="galerie/photo-05.jpg" alt="" loading="eager">
@@ -395,6 +406,7 @@ footer a:hover{text-decoration:underline}
     <!-- ==================== FORMULAIRE ==================== -->
     <div id="formView">
     <form id="preinscription" novalidate>
+      <input type="hidden" name="langue" id="waLangField" value="fr">
 
       <!-- 1. Informations générales -->
       <fieldset data-step="1">
@@ -795,10 +807,10 @@ document.querySelectorAll('.dropzone').forEach(dz => {
   const setFile = (file) => {
     if (!file) return;
     if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
-      alert('Format non accepté. Utilisez JPG, PNG ou WEBP.'); return;
+      alert(window.waT ? window.waT('Format non accepté. Utilisez JPG, PNG ou WEBP.') : 'Format non accepté. Utilisez JPG, PNG ou WEBP.'); return;
     }
     if (file.size > MAX_MO) {
-      alert('Photo trop lourde (maximum 10 Mo).'); return;
+      alert(window.waT ? window.waT('Photo trop lourde (maximum 10 Mo).') : 'Photo trop lourde (maximum 10 Mo).'); return;
     }
     photos[idx] = file;
     const reader = new FileReader();
@@ -855,9 +867,11 @@ function updateProgress(){
   let current = 1;
   for (const f of stepFieldsets){ if (f.getBoundingClientRect().top <= marker) current = +f.dataset.step; }
   bar.style.width = (current/steps*100) + '%';
-  label.textContent = `Étape ${current}/${steps}`;
+  const motEtape = (window.waT ? window.waT('Étape') : 'Étape');
+  label.textContent = `${motEtape} ${current}/${steps}`;
   label.classList.add('visible');
 }
+window.updateProgress = updateProgress;
 form.addEventListener('input', updateProgress);
 form.addEventListener('change', updateProgress);
 window.addEventListener('scroll', updateProgress, {passive:true});
@@ -929,15 +943,15 @@ form.addEventListener('submit', async e => {
   fd.append('_subject', 'Nouvelle pré-inscription — Week-end Artisanal Famiflora');
 
   if (ENDPOINT){
-    btn.disabled = true; btn.textContent = 'Envoi en cours…';
+    btn.disabled = true; btn.textContent = window.waT ? window.waT('Envoi en cours…') : 'Envoi en cours…';
     window.feeShow && window.feeShow();          // la fée occupe l'attente (envoi photos + e-mails)
     try{
       const res = await fetch(ENDPOINT, {method:'POST', body:fd, headers:{'Accept':'application/json'}});
       if (!res.ok) throw new Error();
     }catch(err){
       window.feeHide && window.feeHide();
-      btn.disabled = false; btn.textContent = 'ENVOYER MA PRÉ-INSCRIPTION';
-      alert("L'envoi a échoué. Vérifiez votre connexion et réessayez, ou contactez-nous : cyril.loiseau@famiflora.be");
+      btn.disabled = false; btn.textContent = window.waT ? window.waT('ENVOYER MA PRÉ-INSCRIPTION') : 'ENVOYER MA PRÉ-INSCRIPTION';
+      alert(window.waT ? window.waT("L'envoi a échoué. Vérifiez votre connexion et réessayez, ou contactez-nous : cyril.loiseau@famiflora.be") : "L'envoi a échoué. Vérifiez votre connexion et réessayez, ou contactez-nous : cyril.loiseau@famiflora.be");
       return;
     }
   }
@@ -968,13 +982,13 @@ function showThanks(fd){
   dl.innerHTML = '';
   Object.keys(labels).forEach(k=>{
     if (!grouped[k]) return;
-    const dt = document.createElement('dt'); dt.textContent = labels[k];
+    const dt = document.createElement('dt'); dt.textContent = window.waT ? window.waT(labels[k]) : labels[k];
     const dd = document.createElement('dd'); dd.textContent = grouped[k];
     dl.append(dt, dd);
   });
   const ddPhotos = document.createElement('dd');
   ddPhotos.textContent = photos.map(f=>f.name).join(', ');
-  const dtPhotos = document.createElement('dt'); dtPhotos.textContent = 'Photos jointes';
+  const dtPhotos = document.createElement('dt'); dtPhotos.textContent = window.waT ? window.waT('Photos jointes') : 'Photos jointes';
   dl.append(dtPhotos, ddPhotos);
 
   document.getElementById('formView').classList.add('hidden');
@@ -1008,7 +1022,7 @@ const galleryPhotos = Array.from({length: GALLERY_COUNT}, (_, i) =>
   });
   const more = document.createElement('button');
   more.type = 'button'; more.className = 'thumb more';
-  more.innerHTML = `<span>+${GALLERY_COUNT - PREVIEW}<br>photos</span>`;
+  more.innerHTML = `<span>+${GALLERY_COUNT - PREVIEW}<br>${window.waT ? window.waT('photos') : 'photos'}</span>`;
   more.addEventListener('click', openGallery);
   thumbsWrap.appendChild(more);
 
