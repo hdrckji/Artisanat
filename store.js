@@ -73,6 +73,7 @@ function create(body, photoFiles) {
     createdAt: new Date().toISOString(),
     status: 'pending',            // pending | valide | refuse
     decidedAt: null,
+    langue: body.langue === 'nl' ? 'nl' : 'fr',   // langue du formulaire (e-mails)
     fields,
     photos,
     facture: null,                // { file, envoyeeAt }
