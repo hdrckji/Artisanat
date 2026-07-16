@@ -181,6 +181,9 @@
     'Format non accepté. Utilisez JPG, PNG ou WEBP.': 'Formaat niet toegestaan. Gebruik JPG, PNG of WEBP.',
     'Photo trop lourde (maximum 10 Mo).': 'Foto te zwaar (maximum 10 MB).',
     'Étape': 'Stap',
+    '✉️ Un e-mail de confirmation vous a été envoyé.': '✉️ Er is een bevestigingsmail naar u verzonden.',
+    "⚠️ Le mail de confirmation n'a pas pu être envoyé. Contactez %MAIL% pour plus de renseignements.":
+      '⚠️ De bevestigingsmail kon niet worden verzonden. Neem contact op met %MAIL% voor meer informatie.',
     'Photos jointes': "Bijgevoegde foto's",
     'photos': "foto's",
     // Libellés du récapitulatif (page de remerciement)

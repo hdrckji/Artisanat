@@ -44,9 +44,11 @@ app.post(
     }
 
     // Envoi des e-mails (accusé candidat + notification organisateur).
+    let mailed = false;   // l'accusé de réception au candidat est-il parti ?
     if (mailer.isConfigured()) {
       try {
         const r = await mailer.sendPreinscription(data, photos, record.langue);
+        mailed = r.applicant;
         if (!r.organizer || !r.applicant) {
           const parts = [];
           if (!r.organizer) parts.push('notification organisateur');
@@ -61,7 +63,7 @@ app.post(
     } else {
       console.warn('⚠️  SMTP non configuré — aucun e-mail envoyé (soumission conservée).');
     }
-    return res.status(200).json({ ok: true, id: record.id });
+    return res.status(200).json({ ok: true, id: record.id, mailed });
   }
 );
 
