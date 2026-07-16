@@ -30,8 +30,9 @@ header.hero{position:relative;text-align:center;padding:2.6rem 1.25rem 2.8rem;co
   background:linear-gradient(180deg,#7a5a3a 0%, #6b4d31 55%, #5f4630 100%);border-bottom:6px solid var(--vert)}
 header.hero h1{color:var(--creme);font-size:2rem;margin-bottom:.5rem}
 header.hero p{color:#f0e6d6;max-width:640px;margin:0 auto}
-.lang-switch{position:absolute;top:1rem;left:1rem;z-index:5;display:flex;gap:.25rem;
-  background:rgba(0,0,0,.28);border:1px solid rgba(250,244,232,.35);border-radius:999px;padding:.2rem}
+.lang-switch{position:fixed;top:10px;left:12px;z-index:120;display:flex;gap:.25rem;
+  background:var(--brun-fonce);border:1px solid rgba(250,244,232,.35);border-radius:999px;padding:.2rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.28)}
 .lang-switch button{border:none;background:transparent;color:#f0e6d6;font-family:'Karla',sans-serif;
   font-weight:700;font-size:.82rem;padding:.32rem .7rem;border-radius:999px;cursor:pointer}
 .lang-switch button.active{background:var(--vert);color:#fff}
