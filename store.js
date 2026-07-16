@@ -78,6 +78,7 @@ function create(body, photoFiles) {
     photos,
     facture: null,                // { file, envoyeeAt }
     facturePayee: false,
+    emailWarnings: [],            // e-mails qui n'ont pas pu être envoyés
   };
 
   const list = readAll();
@@ -119,6 +120,20 @@ function saveFacture(id, file) {
   return path.join(dir, name);
 }
 
+/** Ajoute un avertissement « e-mail non envoyé » à une inscription. */
+function addEmailWarning(id, entry) {
+  const rec = get(id);
+  if (!rec) return null;
+  const warnings = Array.isArray(rec.emailWarnings) ? rec.emailWarnings.slice() : [];
+  warnings.push({ at: new Date().toISOString(), ...entry });
+  return update(id, { emailWarnings: warnings });
+}
+
+/** Efface les avertissements e-mail (ex. après un renvoi réussi). */
+function clearEmailWarnings(id) {
+  return update(id, { emailWarnings: [] });
+}
+
 function markFactureEnvoyee(id) {
   const rec = get(id);
   if (!rec || !rec.facture) return null;
@@ -141,4 +156,5 @@ module.exports = {
   DATA_DIR, FIELD_KEYS,
   create, list, get, update, setStatus,
   saveFacture, markFactureEnvoyee, photoPath, facturePath,
+  addEmailWarning, clearEmailWarnings,
 };

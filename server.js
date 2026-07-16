@@ -45,8 +45,19 @@ app.post(
 
     // Envoi des e-mails (accusé candidat + notification organisateur).
     if (mailer.isConfigured()) {
-      try { await mailer.sendPreinscription(data, photos, record.langue); }
-      catch (err) { console.error('Envoi e-mail pré-inscription échoué (soumission conservée) :', err); }
+      try {
+        const r = await mailer.sendPreinscription(data, photos, record.langue);
+        if (!r.organizer || !r.applicant) {
+          const parts = [];
+          if (!r.organizer) parts.push('notification organisateur');
+          if (!r.applicant) parts.push('accusé candidat');
+          store.addEmailWarning(record.id, { type: 'preinscription', echec: parts.join(' + '), error: r.errors.join(' | ') });
+          console.error(`⚠️  E-mail pré-inscription non envoyé (${parts.join(' + ')}) :`, r.errors.join(' | '));
+        }
+      } catch (err) {
+        store.addEmailWarning(record.id, { type: 'preinscription', echec: 'e-mails', error: String(err) });
+        console.error('Envoi e-mail pré-inscription échoué (soumission conservée) :', err);
+      }
     } else {
       console.warn('⚠️  SMTP non configuré — aucun e-mail envoyé (soumission conservée).');
     }
@@ -127,26 +138,34 @@ app.get('/api/admin/submissions/:id/facture', (req, res) => {
 app.post('/api/admin/submissions/:id/validate', async (req, res) => {
   const rec = store.get(req.params.id);
   if (!rec) return res.status(404).json({ ok: false, error: 'not_found' });
-  const updated = store.setStatus(rec.id, 'valide');
-  let mailed = false;
+  store.setStatus(rec.id, 'valide');
+  let mailed = false, mailError = false;
   if (mailer.isConfigured()) {
     try { await mailer.sendValidation(rec.fields, rec.langue); mailed = true; }
-    catch (err) { console.error('E-mail de validation échoué :', err); }
+    catch (err) {
+      mailError = true;
+      store.addEmailWarning(rec.id, { type: 'validation', echec: 'e-mail de validation', error: String(err) });
+      console.error('E-mail de validation échoué :', err);
+    }
   }
-  res.json({ ok: true, submission: updated, mailed });
+  res.json({ ok: true, submission: store.get(rec.id), mailed, mailError });
 });
 
 // Refuser une candidature (+ e-mail de refus).
 app.post('/api/admin/submissions/:id/reject', async (req, res) => {
   const rec = store.get(req.params.id);
   if (!rec) return res.status(404).json({ ok: false, error: 'not_found' });
-  const updated = store.setStatus(rec.id, 'refuse');
-  let mailed = false;
+  store.setStatus(rec.id, 'refuse');
+  let mailed = false, mailError = false;
   if (mailer.isConfigured()) {
     try { await mailer.sendRejection(rec.fields, rec.langue); mailed = true; }
-    catch (err) { console.error('E-mail de refus échoué :', err); }
+    catch (err) {
+      mailError = true;
+      store.addEmailWarning(rec.id, { type: 'refus', echec: 'e-mail de refus', error: String(err) });
+      console.error('E-mail de refus échoué :', err);
+    }
   }
-  res.json({ ok: true, submission: updated, mailed });
+  res.json({ ok: true, submission: store.get(rec.id), mailed, mailError });
 });
 
 // Upload + envoi de la facture (marque « facture envoyée »).
@@ -169,9 +188,17 @@ app.post('/api/admin/submissions/:id/facture', uploadFacture.single('facture'), 
     const updated = store.markFactureEnvoyee(rec.id);
     res.json({ ok: true, submission: updated, mailed: true });
   } catch (err) {
+    store.addEmailWarning(rec.id, { type: 'facture', echec: 'envoi de la facture', error: String(err) });
     console.error('Envoi de la facture échoué :', err);
     res.status(500).json({ ok: false, error: 'mail_failed', submission: store.get(rec.id) });
   }
+});
+
+// Marquer les avertissements e-mail comme traités (les effacer).
+app.post('/api/admin/submissions/:id/clear-warnings', (req, res) => {
+  const rec = store.get(req.params.id);
+  if (!rec) return res.status(404).json({ ok: false, error: 'not_found' });
+  res.json({ ok: true, submission: store.clearEmailWarnings(rec.id) });
 });
 
 // Basculer « facture payée ».

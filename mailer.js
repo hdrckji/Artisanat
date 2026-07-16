@@ -174,8 +174,11 @@ async function sendPreinscription(data, photos, lang) {
     sendOrganizerNotification(data, photos),
     sendConfirmation(data, lang),
   ]);
-  if (results[0].status === 'rejected') throw results[0].reason;
-  if (results[1].status === 'rejected') console.warn('Accusé candidat non envoyé :', results[1].reason);
+  return {
+    organizer: results[0].status === 'fulfilled',   // notification à l'organisateur envoyée ?
+    applicant: results[1].status === 'fulfilled',   // accusé au candidat envoyé ?
+    errors: results.filter(r => r.status === 'rejected').map(r => String(r.reason)),
+  };
 }
 
 // ---------------------------------------------------------------------

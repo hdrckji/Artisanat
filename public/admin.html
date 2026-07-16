@@ -77,6 +77,10 @@ header.top h1{color:var(--creme);font-size:1.25rem}
 .badge.ok{background:#eaf6d9;color:var(--vert-fonce)}
 .badge.wait{background:#fdeee2;color:var(--terre)}
 .badge.paid{background:#e7f0fb;color:#2b6cb0}
+.badge.fail{background:#fdecea;color:#c0392b}
+.warn-box{background:#fdf3f1;border:1px solid #e6b0aa;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1rem}
+.warn-box h3{color:#93261a;font-size:1rem;margin-bottom:.4rem}
+.warn-box ul{margin:.2rem 0 .6rem 1.1rem;font-size:.85rem;color:#7a3027}
 .section-sep{font-family:'Fraunces',serif;font-weight:700;color:var(--brun);margin:1.2rem 0 .6rem;font-size:1.05rem;display:flex;align-items:center;gap:.5rem}
 .empty{color:var(--gris-doux);text-align:center;padding:2.5rem;background:var(--blanc);border-radius:12px}
 
@@ -158,6 +162,7 @@ dl.recap dd{word-break:break-word}
   <div id="smtpWarn" class="smtp-warn" style="display:none" data-i18n="smtp_warn">
     ⚠️ Le service e-mail (SMTP) n'est pas configuré : les décisions sont enregistrées mais aucun e-mail ne sera envoyé aux candidats.
   </div>
+  <div id="mailWarnBanner" class="smtp-warn" style="display:none"></div>
 
   <div class="wrap">
     <div class="tabs" id="tabs">
@@ -256,7 +261,13 @@ const STR = {
   m_export_min:['Sélectionnez au moins une colonne.','Selecteer minstens één kolom.'],
   m_export_gen:['Génération du fichier…','Bestand genereren…'],
   m_export_ok:['Fichier téléchargé.','Bestand gedownload.'],
-  err_prefix:['Erreur : ','Fout: ']
+  err_prefix:['Erreur : ','Fout: '],
+  b_mailfail:['⚠️ E-mail non parti','⚠️ E-mail niet verzonden'],
+  warn_title:['⚠️ E-mail(s) non envoyé(s)','⚠️ Niet-verzonden e-mail(s)'],
+  warn_clear:['Marquer comme traité','Als behandeld markeren'],
+  m_decision_mailerr:["Décision enregistrée, mais l'e-mail n'a pas pu être envoyé au candidat.",'Beslissing opgeslagen, maar de e-mail kon niet naar de kandidaat worden verzonden.'],
+  mailban_1:['⚠️ ','⚠️ '],
+  mailban_2:[' inscription(s) avec un e-mail non envoyé — voir les fiches marquées « E-mail non parti ».',' inschrijving(en) met een niet-verzonden e-mail — zie de fiches met « E-mail niet verzonden ».']
 };
 // Libellés des champs (détail) FR/NL
 const FIELD_LABELS = [
@@ -315,7 +326,7 @@ function applyLang(l){
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = T(el.getAttribute('data-i18n')); });
   document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang') === LANG));
-  if ($('#app').style.display !== 'none'){ renderCounts(); renderTab(); if (OPEN_ID) openDetail(OPEN_ID); }
+  if ($('#app').style.display !== 'none'){ renderCounts(); updateMailBanner(); renderTab(); if (OPEN_ID) openDetail(OPEN_ID); }
 }
 document.querySelectorAll('.lang-switch button').forEach(b => b.addEventListener('click', () => applyLang(b.getAttribute('data-lang'))));
 
@@ -345,10 +356,18 @@ async function start(){
   $('#smtpWarn').style.display = me.smtp ? 'none' : 'block';
   await loadSubs();
 }
+function hasWarn(r){ return r.emailWarnings && r.emailWarnings.length > 0; }
+
 async function loadSubs(){
   const data = await (await api('/api/admin/submissions')).json();
   SUBS = data.submissions || [];
-  renderCounts(); renderTab();
+  renderCounts(); updateMailBanner(); renderTab();
+}
+function updateMailBanner(){
+  const n = SUBS.filter(hasWarn).length;
+  const el = $('#mailWarnBanner');
+  if (n){ el.textContent = T('mailban_1') + n + T('mailban_2'); el.style.display = 'block'; }
+  else { el.style.display = 'none'; }
 }
 function renderCounts(){
   const by = s => SUBS.filter(r=>r.status===s).length;
@@ -369,10 +388,11 @@ function cardHtml(r){
     ? (r.facture && r.facture.envoyeeAt ? `<span class="badge ok">${T('b_envoyee')}</span>` : `<span class="badge wait">${T('b_afaire')}</span>`)
     : '';
   const paidBadge = (r.status==='valide' && r.facturePayee) ? `<span class="badge paid">${T('b_payee')}</span>` : '';
+  const mailBadge = hasWarn(r) ? `<span class="badge fail">${T('b_mailfail')}</span>` : '';
   return `<div class="card ${r.status}" data-id="${r.id}">
     <div class="main">
       <strong>${esc(f.entreprise || f.nom || '—')}</strong>
-      <span class="sub">${esc(f.nom||'')} · ${esc(f.email||'')} · ${esc(f.telephone||'')}${factureBadge}${paidBadge}</span>
+      <span class="sub">${esc(f.nom||'')} · ${esc(f.email||'')} · ${esc(f.telephone||'')}${factureBadge}${paidBadge}${mailBadge}</span>
     </div>
     <div class="meta">${esc(f.formule||'')}<br>${fmtDate(r.createdAt)}</div>
   </div>`;
@@ -423,8 +443,16 @@ function openDetail(id){
       ${r.status==='valide' ? `<button class="btn btn-danger btn-sm" data-act="reject" data-id="${r.id}">${T('bascule_refuse')}</button>` : `<button class="btn btn-sm" data-act="validate" data-id="${r.id}">${T('bascule_valide')}</button>`}
     </div>`;
 
+  const warnBox = hasWarn(r) ? `
+    <div class="warn-box">
+      <h3>${T('warn_title')}</h3>
+      <ul>${r.emailWarnings.map(w => `<li>${esc(w.echec || w.type || 'e-mail')} — ${fmtDate(w.at)}</li>`).join('')}</ul>
+      <button class="btn-ghost btn-sm" data-act="clearwarn" data-id="${r.id}">${T('warn_clear')}</button>
+    </div>` : '';
+
   $('#detailBody').innerHTML = `
     <p class="status-line ${r.status}">${T('statut')} ${T('st_'+r.status)}</p>
+    ${warnBox}
     ${photos ? `<div class="photos">${photos}</div>` : ''}
     ${recap}
     <div class="action-box">
@@ -474,30 +502,41 @@ function bindDetailActions(){
   }
 }
 
+function setDetailMsg(cls, txt){ const m=$('#detailMsg'); if(m){ m.className='msg '+cls; m.textContent=txt; } }
+
 async function doAction(btn){
-  const id = btn.dataset.id, act = btn.dataset.act, msg = $('#detailMsg');
+  const id = btn.dataset.id, act = btn.dataset.act;
   btn.classList.add('spin');
-  window.feeShow && window.feeShow();
+  const isLong = (act==='validate' || act==='reject' || act==='facture');
+  if (isLong) window.feeShow && window.feeShow();
   try{
     if (act==='validate' || act==='reject'){
       const res = await api(`/api/admin/submissions/${id}/${act}`, {method:'POST'});
       const j = await res.json();
       window.feeHide && window.feeHide();
-      if (msg){ msg.className='msg ok'; msg.textContent = j.mailed ? T('m_decision_mail') : T('m_decision_nomail'); }
       await loadSubs();
-      $('#detailOverlay').classList.remove('open'); OPEN_ID=null;
+      if (j.mailError){
+        openDetail(id);                                   // ré-affiche avec l'encadré d'alerte
+        setDetailMsg('err', T('m_decision_mailerr'));
+      } else {
+        setDetailMsg('ok', j.mailed ? T('m_decision_mail') : T('m_decision_nomail'));
+        $('#detailOverlay').classList.remove('open'); OPEN_ID=null;
+      }
     } else if (act==='facture'){
       const file = $('#factureFile').files[0];
-      if (!file){ window.feeHide&&window.feeHide(); msg.className='msg err'; msg.textContent=T('m_choose'); btn.classList.remove('spin'); return; }
+      if (!file){ window.feeHide&&window.feeHide(); setDetailMsg('err', T('m_choose')); btn.classList.remove('spin'); return; }
       const fd = new FormData(); fd.append('facture', file, file.name);
       const res = await api(`/api/admin/submissions/${id}/facture`, {method:'POST', body:fd});
       const j = await res.json();
       window.feeHide && window.feeHide();
-      if (!res.ok){ msg.className='msg err'; msg.textContent=T('m_facture_fail'); }
-      else { msg.className='msg ok'; msg.textContent = j.mailed ? T('m_facture_mail') : T('m_facture_nomail'); }
+      await loadSubs(); openDetail(id);
+      if (!res.ok){ setDetailMsg('err', T('m_facture_fail')); }
+      else { setDetailMsg('ok', j.mailed ? T('m_facture_mail') : T('m_facture_nomail')); }
+    } else if (act==='clearwarn'){
+      await api(`/api/admin/submissions/${id}/clear-warnings`, {method:'POST'});
       await loadSubs(); openDetail(id);
     }
-  }catch(e){ window.feeHide&&window.feeHide(); if (msg){ msg.className='msg err'; msg.textContent=T('err_prefix')+e.message; } }
+  }catch(e){ window.feeHide&&window.feeHide(); setDetailMsg('err', T('err_prefix')+e.message); }
   btn.classList.remove('spin');
 }
 
