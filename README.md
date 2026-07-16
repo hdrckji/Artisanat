@@ -106,6 +106,8 @@ Les pré-inscriptions et les fichiers (photos, factures) sont stockés sur disqu
 - Page de remerciement avec récapitulatif + impression de la fiche d'inscription
 - Envoi automatique des e-mails (accusé candidat + notification organisateur avec photos)
 - Espace admin : consultation, validation/refus (avec e-mails), factures et export Excel
+- Site entièrement bilingue FR / NL (sélecteur de langue ; e-mails envoyés dans la langue du formulaire ; règlement PDF FR ou NL). L'espace admin est bilingue également.
+- Animation « fée Famiflora » pendant l'envoi du formulaire : elle fait apparaître un meuble différent toutes les 3 s (`public/fee.js`)
 
 ## Contact
 
