@@ -21,21 +21,29 @@ const {
 } = process.env;
 
 const ORGANISATEUR = MAIL_TO || 'cyril.loiseau@famiflora.be';
-const EXPEDITEUR = MAIL_FROM || SMTP_USER;
+// Adresse d'expéditeur affichée. Sur un relais sans login, MAIL_FROM est requis
+// (il n'y a pas de SMTP_USER pour servir de repli).
+const EXPEDITEUR = MAIL_FROM || SMTP_USER || ORGANISATEUR;
 
+// Le service est utilisable dès qu'on a un serveur (le relais interne ne
+// demande pas forcément d'identifiants).
 function isConfigured() {
-  return Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
+  return Boolean(SMTP_HOST);
 }
 
 let _transport = null;
 function getTransport() {
   if (_transport) return _transport;
-  _transport = nodemailer.createTransport({
+  const opts = {
     host: SMTP_HOST,
     port: Number(SMTP_PORT),
     secure: SMTP_SECURE === 'true' || Number(SMTP_PORT) === 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
+    // Relais internes : certificats parfois auto-signés → on n'échoue pas dessus.
+    tls: { rejectUnauthorized: false },
+  };
+  // Authentification uniquement si des identifiants sont fournis.
+  if (SMTP_USER && SMTP_PASS) opts.auth = { user: SMTP_USER, pass: SMTP_PASS };
+  _transport = nodemailer.createTransport(opts);
   return _transport;
 }
 
