@@ -4,7 +4,8 @@
   "description": "Page de pré-inscription au Week-end Artisanal Famiflora (2e édition)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "diag:smtp": "node diag-smtp.js"
   },
   "engines": {
     "node": ">=18"
