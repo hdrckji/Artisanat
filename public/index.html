@@ -369,7 +369,7 @@ footer a:hover{text-decoration:underline}
 </div>
 
 <div id="progressWrap"><div id="progressBar"></div></div>
-<div id="progressLabel">Étape 1/5</div>
+<div id="progressLabel">Étape 1/9</div>
 
 <!-- ==================== EN-TÊTE ==================== -->
 <header class="hero">
@@ -857,28 +857,17 @@ function validateField(el){
   return ok;
 }
 
-/* ---------- Barre de progression (Étape x/5) ---------- */
-const steps = 5;
+/* ---------- Barre de progression (une étape par section numérotée) ---------- */
 const label = document.getElementById('progressLabel');
 const bar = document.getElementById('progressBar');
-function stepDone(n){
-  const fs = [...document.querySelectorAll(`fieldset[data-step="${n}"]`)];
-  return fs.every(f => {
-    const reqs = [...f.querySelectorAll('input[required], textarea[required]')];
-    const radios = new Set(reqs.filter(i=>i.type==='radio').map(i=>i.name));
-    let ok = reqs.filter(i=>i.type!=='radio'&&i.type!=='checkbox').every(i=>i.checkValidity()&&i.value.trim()!=='');
-    ok = ok && [...radios].every(nm => f.querySelector(`input[name="${nm}"]:checked`));
-    ok = ok && reqs.filter(i=>i.type==='checkbox').every(i=>i.checked);
-    if (f.querySelector('.dropzone')) ok = ok && photos.every(Boolean);
-    return ok;
-  });
-}
+// Une étape = une section du formulaire (les 9 encadrés numérotés).
 const stepFieldsets = [...document.querySelectorAll('fieldset[data-step]')];
+const steps = stepFieldsets.length || 1;
 function updateProgress(){
   // L'étape affichée suit la position de lecture (scroll) dans le formulaire.
   const marker = window.innerHeight * 0.30;
   let current = 1;
-  for (const f of stepFieldsets){ if (f.getBoundingClientRect().top <= marker) current = +f.dataset.step; }
+  stepFieldsets.forEach((f, i) => { if (f.getBoundingClientRect().top <= marker) current = i + 1; });
   bar.style.width = (current/steps*100) + '%';
   const motEtape = (window.waT ? window.waT('Étape') : 'Étape');
   label.textContent = `${motEtape} ${current}/${steps}`;
