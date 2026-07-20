@@ -6,6 +6,7 @@ try { require('dotenv').config(); } catch (_) { /* dotenv facultatif en producti
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const ExcelJS = require('exceljs');
 const mailer = require('./mailer');
 const store = require('./store');
@@ -69,6 +70,24 @@ app.post(
     return res.status(200).json({ ok: true, id: record.id, mailed });
   }
 );
+
+// =====================================================================
+//  1 bis) Galerie photos (public) — liste dynamique du dossier
+//  Toute image déposée dans public/galerie apparaît automatiquement
+//  sur le site : aucune modification de code nécessaire.
+// =====================================================================
+app.get('/api/galerie', (_req, res) => {
+  const dir = path.join(__dirname, 'public', 'galerie');
+  try {
+    const photos = fs.readdirSync(dir)
+      .filter(f => /\.(jpe?g|png|webp|gif)$/i.test(f))
+      .sort((a, b) => a.localeCompare(b, 'fr', { numeric: true, sensitivity: 'base' }));
+    res.json({ ok: true, photos });
+  } catch (err) {
+    console.error('Lecture du dossier galerie impossible :', err);
+    res.json({ ok: true, photos: [] });
+  }
+});
 
 // =====================================================================
 //  2) Authentification admin

@@ -1033,11 +1033,10 @@ function showThanks(fd, mailed){
   window.scrollTo({top: document.getElementById('thanks').offsetTop - 40, behavior:'smooth'});
 }
 
-/* ---------- Galerie photos ---------- */
-const GALLERY_COUNT = 19;
-const galleryPhotos = Array.from({length: GALLERY_COUNT}, (_, i) =>
-  `galerie/photo-${String(i+1).padStart(2,'0')}.jpg`);
-
+/* ---------- Galerie photos (liste dynamique) ----------
+   Les photos sont lues depuis le dossier public/galerie via /api/galerie :
+   il suffit d'y déposer une image pour qu'elle apparaisse sur le site,
+   sans toucher au code. */
 (function initGallery(){
   const thumbsWrap = document.getElementById('galleryThumbs');
   const fullWrap   = document.getElementById('galleryFull');
@@ -1046,30 +1045,45 @@ const galleryPhotos = Array.from({length: GALLERY_COUNT}, (_, i) =>
   const zoomImg    = document.getElementById('lbZoomImg');
   if (!thumbsWrap) return;
 
-  /* aperçu latéral : 3 vignettes + tuile "+N photos" (4 tuiles au total) */
-  const PREVIEW = 3;
-  galleryPhotos.slice(0, PREVIEW).forEach((src, i) => {
-    const t = document.createElement('button');
-    t.type = 'button'; t.className = 'thumb';
-    t.style.backgroundImage = `url(${src})`;
-    t.setAttribute('aria-label', `Ouvrir la galerie, photo ${i+1}`);
-    t.addEventListener('click', openGallery);
-    thumbsWrap.appendChild(t);
-  });
-  const more = document.createElement('button');
-  more.type = 'button'; more.className = 'thumb more';
-  more.innerHTML = `<span>+${GALLERY_COUNT - PREVIEW}<br>${window.waT ? window.waT('photos') : 'photos'}</span>`;
-  more.addEventListener('click', openGallery);
-  thumbsWrap.appendChild(more);
+  const PREVIEW = 3;   // vignettes visibles dans la colonne, + une tuile "+N photos"
 
-  /* grille plein écran : toutes les photos */
-  galleryPhotos.forEach((src, i) => {
-    const img = document.createElement('img');
-    img.src = src; img.loading = 'lazy';
-    img.alt = `Photo ${i+1} du Week-end Artisanal`;
-    img.addEventListener('click', () => { zoomImg.src = src; zoom.classList.add('open'); });
-    fullWrap.appendChild(img);
-  });
+  function build(photos){
+    thumbsWrap.innerHTML = ''; fullWrap.innerHTML = '';
+    if (!photos.length) return;
+
+    /* aperçu latéral */
+    photos.slice(0, PREVIEW).forEach((src, i) => {
+      const t = document.createElement('button');
+      t.type = 'button'; t.className = 'thumb';
+      t.style.backgroundImage = `url("${src}")`;
+      t.setAttribute('aria-label', `Ouvrir la galerie, photo ${i+1}`);
+      t.addEventListener('click', openGallery);
+      thumbsWrap.appendChild(t);
+    });
+    if (photos.length > PREVIEW){
+      const more = document.createElement('button');
+      more.type = 'button'; more.className = 'thumb more';
+      more.innerHTML = `<span>+${photos.length - PREVIEW}<br>${window.waT ? window.waT('photos') : 'photos'}</span>`;
+      more.addEventListener('click', openGallery);
+      thumbsWrap.appendChild(more);
+    }
+
+    /* grille plein écran : toutes les photos */
+    photos.forEach((src, i) => {
+      const img = document.createElement('img');
+      img.src = src; img.loading = 'lazy';
+      img.alt = `Photo ${i+1} du Week-end Artisanal`;
+      img.addEventListener('click', () => { zoomImg.src = src; zoom.classList.add('open'); });
+      fullWrap.appendChild(img);
+    });
+  }
+
+  fetch('/api/galerie')
+    .then(r => r.json())
+    .then(j => build((j.photos || []).map(n => 'galerie/' + encodeURIComponent(n))))
+    .catch(() => {   // repli : anciennes photos numérotées
+      build(Array.from({length: 19}, (_, i) => `galerie/photo-${String(i+1).padStart(2,'0')}.jpg`));
+    });
 
   function openGallery(){ lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
   function closeGallery(){ lightbox.classList.remove('open'); document.body.style.overflow = ''; }
