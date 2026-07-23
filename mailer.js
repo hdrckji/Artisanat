@@ -21,9 +21,15 @@ const {
 } = process.env;
 
 const ORGANISATEUR = MAIL_TO || 'cyril.loiseau@famiflora.be';
-// Adresse d'expéditeur affichée. Sur un relais sans login, MAIL_FROM est requis
-// (il n'y a pas de SMTP_USER pour servir de repli).
-const EXPEDITEUR = MAIL_FROM || SMTP_USER || ORGANISATEUR;
+// Nom affiché de l'expéditeur (personnalisable via MAIL_FROM_NAME).
+const MAIL_FROM_NAME = process.env.MAIL_FROM_NAME || 'Week-end Artisanal';
+// Adresse d'expéditeur : on utilise TOUJOURS l'adresse du compte authentifié
+// (SMTP_USER) quand elle existe → « Week-end Artisanal <SMTP_USER> ». Cela évite
+// les rejets « sender address not allowed » (l'expéditeur = le compte d'envoi).
+// Repli : MAIL_FROM (cas d'un relais sans login), puis l'adresse organisateur.
+const EXPEDITEUR = SMTP_USER
+  ? `${MAIL_FROM_NAME} <${SMTP_USER}>`
+  : (MAIL_FROM || ORGANISATEUR);
 
 // Le service est utilisable dès qu'on a un serveur (le relais interne ne
 // demande pas forcément d'identifiants).
