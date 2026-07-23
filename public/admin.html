@@ -299,7 +299,9 @@ const STR = {
   tpl_intro:['Le texte des e-mails, prêt à copier-coller (utile si un envoi automatique a échoué). Remplacez [Prénom] par le prénom de la personne.','De tekst van de e-mails, klaar om te kopiëren (handig als een automatische verzending mislukte). Vervang [Voornaam] door de voornaam van de persoon.'],
   tpl_object:['Objet','Onderwerp'],
   copy:['Copier','Kopiëren'],
-  copied:['✓ Copié','✓ Gekopieerd']
+  copied:['✓ Copié','✓ Gekopieerd'],
+  delete_btn:['🗑️ Supprimer cette inscription','🗑️ Deze inschrijving verwijderen'],
+  delete_confirm:['Supprimer définitivement cette inscription et ses fichiers ?\nCette action est irréversible.','Deze inschrijving en haar bestanden definitief verwijderen?\nDeze actie is onomkeerbaar.']
 };
 // Libellés des champs (détail) FR/NL
 const FIELD_LABELS = [
@@ -663,6 +665,9 @@ function openDetail(id){
       </div>
       <label class="check-inline"><input type="checkbox" id="paidChk" ${r.facturePayee?'checked':''} data-id="${r.id}"> ${T('facture_payee')}</label>
       <div class="msg" id="detailMsg"></div>
+    </div>
+    <div style="text-align:right;margin-top:.4rem">
+      <button class="btn-ghost btn-sm" style="color:#c0392b;border-color:#e6b0aa" data-act="delete" data-id="${r.id}">${T('delete_btn')}</button>
     </div>`;
 
   bindDetailActions();
@@ -722,6 +727,11 @@ async function doAction(btn){
     } else if (act==='clearwarn'){
       await api(`/api/admin/submissions/${id}/clear-warnings`, {method:'POST'});
       await loadSubs(); openDetail(id);
+    } else if (act==='delete'){
+      if (!confirm(T('delete_confirm'))){ btn.classList.remove('spin'); return; }
+      await api(`/api/admin/submissions/${id}`, {method:'DELETE'});
+      await loadSubs();
+      $('#detailOverlay').classList.remove('open'); OPEN_ID=null;
     }
   }catch(e){ window.feeHide&&window.feeHide(); setDetailMsg('err', T('err_prefix')+e.message); }
   btn.classList.remove('spin');

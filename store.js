@@ -92,6 +92,17 @@ function list() {
   return readAll().sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
+/** Supprime une inscription et ses fichiers (photos, facture). Irréversible. */
+function remove(id) {
+  const all = readAll();
+  const i = all.findIndex(r => r.id === id);
+  if (i === -1) return false;
+  all.splice(i, 1);
+  writeAll(all);
+  try { fs.rmSync(path.join(UPLOADS_DIR, id), { recursive: true, force: true }); } catch (e) { /* dossier déjà absent */ }
+  return true;
+}
+
 function get(id) {
   return readAll().find(r => r.id === id) || null;
 }
@@ -164,7 +175,7 @@ function facturePath(id) {
 
 module.exports = {
   DATA_DIR, FIELD_KEYS,
-  create, list, get, update, setStatus,
+  create, list, get, remove, update, setStatus,
   saveFacture, markFactureEnvoyee, photoPath, facturePath,
   addEmailWarning, clearEmailWarnings, setMailState,
 };

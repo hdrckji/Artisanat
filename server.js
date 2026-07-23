@@ -231,6 +231,14 @@ app.post('/api/admin/submissions/:id/facture', uploadFacture.single('facture'), 
   }
 });
 
+// Supprimer définitivement une inscription (et ses fichiers).
+app.delete('/api/admin/submissions/:id', (req, res) => {
+  const ok = store.remove(req.params.id);
+  if (!ok) return res.status(404).json({ ok: false, error: 'not_found' });
+  console.log(`[suppression] inscription #${req.params.id} supprimée`);
+  res.json({ ok: true });
+});
+
 // Marquer les avertissements e-mail comme traités (les effacer).
 app.post('/api/admin/submissions/:id/clear-warnings', (req, res) => {
   const rec = store.get(req.params.id);
